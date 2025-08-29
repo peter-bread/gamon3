@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -20,6 +21,12 @@ type Config struct {
 type Mapping struct {
 	Paths   map[string]string `json:"paths"`
 	Default string            `json:"default"`
+}
+
+type GHHosts struct {
+	GitHubCom struct {
+		User string `yaml:"user"`
+	} `yaml:"github.com"`
 }
 
 func normalise(path string) string {
@@ -119,6 +126,35 @@ func (m *Mapping) GetAccount(dir string) string {
 	return m.Default
 }
 
+func (g *GHHosts) Load(path string) error {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	if err := yaml.Unmarshal(data, g); err != nil {
+		return err
+	}
+	return nil
+}
+
+func getGHConfigPath() (string, error) {
+	if configDir, found := os.LookupEnv("GH_CONFIG_DIR"); found {
+		return filepath.Join(configDir, "hosts.yml"), nil
+	}
+
+	if xdgConfigDir, found := os.LookupEnv("XDG_CONFIG_HOME"); found {
+		return filepath.Join(xdgConfigDir, "gh", "hosts.yml"), nil
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(homeDir, ".config", "gh", "hosts.yml"), nil
+}
+
 // Setup reads YAML config file and creates a JSON mapping.
 func Setup() {
 	var config Config
@@ -147,15 +183,26 @@ func Run() {
 	pwd := os.Getenv("PWD")
 	account := readMap.GetAccount(pwd)
 
-	// TODO: get current account from ~/.config/gh/hosts.yml
-	// Compare this to `account`. If they are different, then
-	// use exec.Command to switch account.
+	var ghHosts GHHosts
+	ghHostsPath, err := getGHConfigPath()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	fmt.Println("Switching to account:", account)
-	// cmd := exec.Command("echo", "gh", "auth", "switch", "--user", account)
-	// cmd.Stdout = os.Stdout
-	// cmd.Stderr = os.Stderr
-	// cmd.Run()
+	if err := ghHosts.Load(ghHostsPath); err != nil {
+		log.Fatalln(err)
+	}
+
+	currentAccount := ghHosts.GitHubCom.User
+	fmt.Println("Current: ", currentAccount)
+
+	if account != currentAccount {
+		// cmd := exec.Command("gh", "auth", "switch", "--user", account).Run()
+		cmd := exec.Command("echo", "gh", "auth", "switch", "--user", account)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Run()
+	}
 }
 
 func main() {
