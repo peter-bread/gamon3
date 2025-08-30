@@ -5,7 +5,7 @@ Automatically switch GitHub CLI account on `cd`.
 ## Requirements
 
 - Go 1.25
-- [`gh`](https://cli.github.com/)
+- [`gh`](https://cli.github.com/) v2.40.0+
 
 ## Installation
 
