@@ -1,7 +1,10 @@
 package setup
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"path/filepath"
 	"peter-bread/gamon3/internal/ghswitch"
 )
 
@@ -17,18 +20,25 @@ func SetupCmd() {
 		log.Fatalln(err)
 	}
 
-	// TODO: Create directory if not exists.
-	// e.g. $HOME/.config/gamon3
-
-	if err := config.Load(configPath); err != nil {
+	if err := os.MkdirAll(filepath.Dir(configPath), 0755); err != nil {
 		log.Fatalln(err)
 	}
 
-	// TODO: Create directory if not exists.
-	// e.g. $HOME/.local/state/gamon3
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		log.Fatalln("File: " + configPath + " does not exist. Please create it.")
+	}
+
+	if err := config.Load(configPath); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	mappingPath, err := ghswitch.GetMappingPath()
 	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if err := os.MkdirAll(filepath.Dir(mappingPath), 0755); err != nil {
 		log.Fatalln(err)
 	}
 

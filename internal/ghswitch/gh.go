@@ -9,7 +9,8 @@ import (
 
 type GHHosts struct {
 	GitHubCom struct {
-		User string `yaml:"user"`
+		Users map[string]any `yaml:"users"`
+		User  string         `yaml:"user"`
 	} `yaml:"github.com"`
 }
 
@@ -23,6 +24,18 @@ func (g *GHHosts) Load(path string) error {
 		return err
 	}
 	return nil
+}
+
+func (g *GHHosts) GetCurrentUser() string {
+	return g.GitHubCom.User
+}
+
+func (g *GHHosts) GetAllUsers() []string {
+	users := make([]string, 0, len(g.GitHubCom.Users))
+	for user := range g.GitHubCom.Users {
+		users = append(users, user)
+	}
+	return users
 }
 
 func GetGHHostsPath() (string, error) {

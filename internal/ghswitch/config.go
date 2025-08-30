@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
+	"strings"
 
 	"github.com/goccy/go-yaml"
 )
@@ -36,6 +38,58 @@ func (c *Config) Load(path string) error {
 
 	if err := yaml.Unmarshal(data, c); err != nil {
 		return err
+	}
+
+	if err := c.Validate(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Config) Validate() error {
+	if err := c.ValidateUsers(); err != nil {
+		return err
+	}
+
+	// TODO: Validate paths?
+
+	return nil
+}
+
+func (c *Config) ValidateUsers() error {
+	var errs []string
+	var ghHosts GHHosts
+
+	ghHostsPath, err := GetGHHostsPath()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if err := ghHosts.Load(ghHostsPath); err != nil {
+		log.Fatalln(err)
+	}
+
+	if c.Default == "" {
+		errs = append(errs, "config: 'default' field is required")
+	}
+
+	users := ghHosts.GetAllUsers()
+
+	if !slices.Contains(users, c.Default) {
+		errs = append(errs, "config: '"+c.Default+"' has not been registered with GH CLI")
+	}
+
+	for account := range c.Accounts {
+		if account == "" {
+			errs = append(errs, "config: account names must be non-empty")
+		}
+		if !slices.Contains(users, account) {
+			errs = append(errs, "config: '"+account+"' has not been registered with GH CLI")
+		}
+	}
+	if len(errs) > 0 {
+		return fmt.Errorf("%s", strings.Join(errs, "\n"))
 	}
 
 	return nil

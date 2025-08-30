@@ -1,7 +1,6 @@
 package run
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -37,14 +36,9 @@ func RunCmd() {
 		log.Fatalln(err)
 	}
 
-	currentAccount := ghHosts.GitHubCom.User
-	fmt.Println("Current: ", currentAccount)
+	currentAccount := ghHosts.GetCurrentUser()
 
 	if account != currentAccount {
 		exec.Command("gh", "auth", "switch", "--user", account).Run()
-		// cmd := exec.Command("echo", "gh", "auth", "switch", "--user", account)
-		// cmd.Stdout = os.Stdout
-		// cmd.Stderr = os.Stderr
-		// cmd.Run()
 	}
 }
