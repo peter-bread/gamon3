@@ -95,14 +95,13 @@ func (c *Config) ValidateUsers() error {
 	return nil
 }
 
-func GetConfigPath() (string, error) {
-	// TODO: Handle .yml and .yaml extensions.
+func GetConfigDir() (string, error) {
 	if configDir, found := os.LookupEnv("GAMON3_CONFIG_DIR"); found {
-		return filepath.Join(configDir, "config.yml"), nil
+		return filepath.Join(configDir), nil
 	}
 
 	if xdgConfigDir, found := os.LookupEnv("XDG_CONFIG_HOME"); found {
-		return filepath.Join(xdgConfigDir, "gamon3", "config.yml"), nil
+		return filepath.Join(xdgConfigDir, "gamon3"), nil
 	}
 
 	homeDir, err := os.UserHomeDir()
@@ -110,7 +109,36 @@ func GetConfigPath() (string, error) {
 		return "", err
 	}
 
-	return filepath.Join(homeDir, ".config", "gamon3", "config.yml"), nil
+	return filepath.Join(homeDir, ".config", "gamon3"), nil
+}
+
+func GetConfigPath() (string, error) {
+	configDir, err := GetConfigDir()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		log.Fatalln(err)
+	}
+
+	var configPath string
+	configPath1 := filepath.Join(configDir, "config.yaml")
+	configPath2 := filepath.Join(configDir, "config.yml")
+
+	if _, err := os.Stat(configPath1); err == nil {
+		configPath = configPath1
+	} else if _, err := os.Stat(configPath2); err == nil {
+		configPath = configPath2
+	} else {
+		configPath = ""
+	}
+
+	if configPath == "" {
+		return "", fmt.Errorf("config: Config file does not exist")
+	}
+
+	return configPath, nil
 }
 
 func (c *Config) printYAML() {

@@ -11,6 +11,40 @@ Automatically switch GitHub CLI account on `cd`.
 
 ## Usage
 
+### GH CLI
+
+Authenticate any GitHub accounts with the GH CLI tool.
+
+### Config File
+
+First create `config.yaml` one of:
+
+1. `$GAMON3_CONFIG_DIR`
+1. `$XDG_CONFIG_HOME/gamon3`
+1. `$HOME/.config/gamon3`
+
+**NOTE:** `config.yaml` takes precedence over `config.yml` if both exist.
+
+There are two top-level fields:
+
+- `default`: (required) This should be your primary, likely personal, GitHub
+  account.
+- `accounts`: (optional) This is a mapping of GitHub accounts to filepaths in
+  which they should be used. Environment variables can be used.
+
+> ![IMPORTANT]
+> You **CANNOT** use `~` for your home directory. Use `$HOME` instead.
+
+Example:
+
+```yaml
+---
+default: peter-bread        # (required)
+accounts:
+  ak22112:
+    - $DEVELOPER/ak22112/
+```
+
 ### Setup
 
 Run this after editing your config.

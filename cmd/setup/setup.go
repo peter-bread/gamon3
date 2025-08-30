@@ -20,14 +20,6 @@ func SetupCmd() {
 		log.Fatalln(err)
 	}
 
-	if err := os.MkdirAll(filepath.Dir(configPath), 0755); err != nil {
-		log.Fatalln(err)
-	}
-
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		log.Fatalln("File: " + configPath + " does not exist. Please create it.")
-	}
-
 	if err := config.Load(configPath); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
