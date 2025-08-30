@@ -16,9 +16,12 @@ var (
 // RunCmd reads from a JSON mapping file and determines the account based on
 // current working directory.
 func RunCmd() {
-	// TODO: Read from proper location (XDG_STATE).
-	readPath := "examples/mapping.json"
-	if err := mapping.Load(readPath); err != nil {
+	mappingPath, err := ghswitch.GetMappingPath()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if err := mapping.Load(mappingPath); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -38,10 +41,10 @@ func RunCmd() {
 	fmt.Println("Current: ", currentAccount)
 
 	if account != currentAccount {
-		// cmd := exec.Command("gh", "auth", "switch", "--user", account).Run()
-		cmd := exec.Command("echo", "gh", "auth", "switch", "--user", account)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		cmd.Run()
+		exec.Command("gh", "auth", "switch", "--user", account).Run()
+		// cmd := exec.Command("echo", "gh", "auth", "switch", "--user", account)
+		// cmd.Stdout = os.Stdout
+		// cmd.Stderr = os.Stderr
+		// cmd.Run()
 	}
 }

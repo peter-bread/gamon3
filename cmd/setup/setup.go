@@ -1,7 +1,6 @@
 package setup
 
 import (
-	"fmt"
 	"log"
 	"peter-bread/gamon3/internal/ghswitch"
 )
@@ -13,28 +12,28 @@ var (
 
 // SetupCmd reads YAML config file and creates a JSON mapping.
 func SetupCmd() {
-	// TODO: Read from proper location (XDG_CONFIG).
 	configPath, err := ghswitch.GetConfigPath()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(configPath)
 
-	loadPath := "examples/config.yaml"
-	if err := config.Load(loadPath); err != nil {
+	// TODO: Create directory if not exists.
+	// e.g. $HOME/.config/gamon3
+
+	if err := config.Load(configPath); err != nil {
 		log.Fatalln(err)
 	}
 
-	// TODO: Write to proper location (XDG_STATE).
+	// TODO: Create directory if not exists.
+	// e.g. $HOME/.local/state/gamon3
+
 	mappingPath, err := ghswitch.GetMappingPath()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(mappingPath)
 
-	savePath := "examples/mapping.json"
 	mapping.Create(&config)
-	if err := mapping.Save(savePath); err != nil {
+	if err := mapping.Save(mappingPath); err != nil {
 		log.Fatalln(err)
 	}
 }
