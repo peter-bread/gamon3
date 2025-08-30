@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/goccy/go-yaml"
 )
@@ -38,6 +39,24 @@ func (c *Config) Load(path string) error {
 	}
 
 	return nil
+}
+
+func GetConfigPath() (string, error) {
+	// TODO: Handle .yml and .yaml extensions.
+	if configDir, found := os.LookupEnv("GAMON3_CONFIG_DIR"); found {
+		return filepath.Join(configDir, "config.yml"), nil
+	}
+
+	if xdgConfigDir, found := os.LookupEnv("XDG_CONFIG_HOME"); found {
+		return filepath.Join(xdgConfigDir, "gamon3", "config.yml"), nil
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(homeDir, ".config", "gamon3", "config.yml"), nil
 }
 
 func (c *Config) printYAML() {

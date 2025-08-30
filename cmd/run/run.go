@@ -8,20 +8,24 @@ import (
 	"peter-bread/gamon3/internal/ghswitch"
 )
 
-// Run reads from a JSON mapping file and determines the account based on
+var (
+	mapping ghswitch.Mapping
+	ghHosts ghswitch.GHHosts
+)
+
+// RunCmd reads from a JSON mapping file and determines the account based on
 // current working directory.
-func Run() {
-	var readMap ghswitch.Mapping
+func RunCmd() {
+	// TODO: Read from proper location (XDG_STATE).
 	readPath := "examples/mapping.json"
-	if err := readMap.Load(readPath); err != nil {
+	if err := mapping.Load(readPath); err != nil {
 		log.Fatalln(err)
 	}
 
 	pwd := os.Getenv("PWD")
-	account := readMap.GetAccount(pwd)
+	account := mapping.GetAccount(pwd)
 
-	var ghHosts ghswitch.GHHosts
-	ghHostsPath, err := ghswitch.GetGHConfigPath()
+	ghHostsPath, err := ghswitch.GetGHHostsPath()
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -71,3 +71,16 @@ func (m *Mapping) GetAccount(dir string) string {
 
 	return m.Default
 }
+
+func GetMappingPath() (string, error) {
+	if xdgStateDir, found := os.LookupEnv("XDG_STATE_HOME"); found {
+		return filepath.Join(xdgStateDir, "gamon3", "mapping.json"), nil
+	}
+
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(homeDir, ".local", "state", "gamon3", "mapping.json"), nil
+}

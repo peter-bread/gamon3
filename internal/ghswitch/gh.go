@@ -25,7 +25,7 @@ func (g *GHHosts) Load(path string) error {
 	return nil
 }
 
-func GetGHConfigPath() (string, error) {
+func GetGHHostsPath() (string, error) {
 	if configDir, found := os.LookupEnv("GH_CONFIG_DIR"); found {
 		return filepath.Join(configDir, "hosts.yml"), nil
 	}
