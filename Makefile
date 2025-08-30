@@ -1,7 +1,7 @@
 .PHONY: all build clean
 
 OUTPUT_DIR = bin
-EXE        = gamon
+EXE        = gamon3
 
 all: clean build
 
