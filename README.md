@@ -32,7 +32,7 @@ There are two top-level fields:
 - `accounts`: (optional) This is a mapping of GitHub accounts to filepaths in
   which they should be used. Environment variables can be used.
 
-> ![IMPORTANT]
+> [!IMPORTANT]
 > You **CANNOT** use `~` for your home directory. Use `$HOME` instead.
 
 Example:
