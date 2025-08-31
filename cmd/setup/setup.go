@@ -22,6 +22,7 @@ func SetupCmd() {
 
 	if err := config.Load(configPath); err != nil {
 		fmt.Println(err)
+		// TODO: Delete old mapping file?
 		os.Exit(1)
 	}
 
