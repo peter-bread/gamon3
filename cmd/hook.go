@@ -20,10 +20,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package cmd
 
-import "peter-bread/gamon3/cmd"
+import (
+	"fmt"
 
-func main() {
-	cmd.Execute()
+	"github.com/spf13/cobra"
+)
+
+// hookCmd represents the hook command
+var hookCmd = &cobra.Command{
+	Use:   "hook",
+	Short: "Prints the shell function used to execute Gamon3 on cd",
+	Long: `Prints the shell function used to execute Gamon3 on cd.
+
+This should be evaluated in your shell rc file.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("hook called")
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(hookCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// hookCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// hookCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

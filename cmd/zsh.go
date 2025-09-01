@@ -20,10 +20,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package cmd
 
-import "peter-bread/gamon3/cmd"
+import (
+	"fmt"
 
-func main() {
-	cmd.Execute()
+	"github.com/spf13/cobra"
+)
+
+// zshCmd represents the zsh command
+var zshCmd = &cobra.Command{
+	Use:   "zsh",
+	Short: "Prints zsh function to hook on cd",
+	Long:  `Prints zsh function to hook on cd.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		script := `
+__gamon3_hook() {
+	gamon3 run
+}
+
+autoload -U add-zsh-hook
+add-zsh-hook chpwd __gamon3_hook
+`
+		fmt.Println(script)
+	},
+}
+
+func init() {
+	hookCmd.AddCommand(zshCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// zshCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// zshCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
