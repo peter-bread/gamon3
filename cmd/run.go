@@ -26,7 +26,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"peter-bread/gamon3/internal/ghswitch"
+	"peter-bread/gamon3/internal/gamon3cmd"
 
 	"github.com/spf13/cobra"
 )
@@ -42,11 +42,11 @@ this to the currently active account. If they differ, it will switch to
 the correct account.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
-			mapping ghswitch.Mapping
-			ghHosts ghswitch.GHHosts
+			mapping gamon3cmd.Mapping
+			ghHosts gamon3cmd.GHHosts
 		)
 
-		mappingPath, err := ghswitch.GetMappingPath()
+		mappingPath, err := gamon3cmd.GetMappingPath()
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -58,7 +58,7 @@ the correct account.`,
 		pwd := os.Getenv("PWD")
 		account := mapping.GetAccount(pwd)
 
-		ghHostsPath, err := ghswitch.GetGHHostsPath()
+		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
 		if err != nil {
 			log.Fatalln(err)
 		}

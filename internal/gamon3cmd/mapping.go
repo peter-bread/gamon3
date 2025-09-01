@@ -1,4 +1,4 @@
-package ghswitch
+package gamon3cmd
 
 import (
 	"encoding/json"

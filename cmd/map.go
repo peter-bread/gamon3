@@ -27,7 +27,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"peter-bread/gamon3/internal/ghswitch"
+	"peter-bread/gamon3/internal/gamon3cmd"
 
 	"github.com/spf13/cobra"
 )
@@ -43,11 +43,11 @@ Reads config file, normalises paths, and creates a mapping.
 This command should always be run after you update your config.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var (
-			config  ghswitch.Config
-			mapping ghswitch.Mapping
+			config  gamon3cmd.Config
+			mapping gamon3cmd.Mapping
 		)
 
-		configPath, err := ghswitch.GetConfigPath()
+		configPath, err := gamon3cmd.GetConfigPath()
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -58,7 +58,7 @@ This command should always be run after you update your config.`,
 			os.Exit(1)
 		}
 
-		mappingPath, err := ghswitch.GetMappingPath()
+		mappingPath, err := gamon3cmd.GetMappingPath()
 		if err != nil {
 			log.Fatalln(err)
 		}

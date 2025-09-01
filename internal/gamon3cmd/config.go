@@ -1,5 +1,5 @@
 // Package ghswitch provides functions to switch gh accounts.
-package ghswitch
+package gamon3cmd
 
 import (
 	"fmt"
