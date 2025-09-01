@@ -27,7 +27,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"peter-bread/gamon3/internal/gamon3cmd"
+
+	"github.com/peter-bread/gamon3/internal/gamon3cmd"
 
 	"github.com/spf13/cobra"
 )
