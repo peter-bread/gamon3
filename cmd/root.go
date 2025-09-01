@@ -48,7 +48,23 @@ Quickstart:
     Gamon3 will check these directories in the order given above, and it will
     look for 'config.yaml' before 'config.yml'.
 
-2.  TODO: Add config
+2.  Add some data to the config file. There are two top-level fields:
+    - default:  (required) This should be your primary, likely personal, GitHub
+      account.
+    - accounts: (optional) Mapping of GitHub accounts to lists of directories in
+      which they should be used. Environment variables can be used.
+
+    DO NOT USE '~' TO REPRESENT YOUR HOME DIRECTORY. USE '$HOME' INSTEAD.
+
+    Example:
+
+      ---
+      default: peter-bread
+      accounts:
+        ak22112:
+          - $DEVELOPER/ak22112/
+          - $HOME/Documents/university
+          - /some/other/path/
 
 3.  Run 'gamon3 map'. This should be run whenever you update your config.
     It may be wise to add this to your shell rc file.
