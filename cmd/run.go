@@ -47,6 +47,32 @@ the correct account.`,
 			ghHosts gamon3cmd.GHHosts
 		)
 
+		// TODO: Check $GAMON3_ACCOUNT.
+		// If not set, continue.
+		// If set, check it is a valid account (using 'hosts.yml').
+		// If it is valid, switch to it and ignore 'mapping.json'.
+		// If it is not valid, a) error and exit, or b) error and
+		// fallback to 'mapping.json'.
+		//
+		// This will allow for even finer grained control.
+		// It will be useful for people who do not split projects
+		// by GitHub account. It does depend on something like direnv
+		// though.
+
+		// TODO: Walk up filetree looking for a '.gamon3.yaml' file which
+		// could contain an account to use. I will probably put this behind
+		// an optional flag, perhaps '--walk' (name TBD). This would make it
+		// and opt-in feature. The reason for this is that it adds overhead and
+		// this command should run as fast as possible. In the future it is
+		// possible that this becomes the default behaviour and users need to
+		// opt-out, maybe by passing the `--no-walk` flag. It should also stop
+		// walking at the $HOME directory, at which point it falls back to
+		// 'mapping.json' and likely then falls back to 'default'.
+		//
+		// This will also allow for finer grained control without depending on
+		// direnv. The downside is that it will have some effect on performance,
+		// however it may be negligible.
+
 		mappingPath, err := gamon3cmd.GetMappingPath()
 		if err != nil {
 			log.Fatalln(err)
