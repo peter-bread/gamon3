@@ -23,9 +23,11 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
+	"slices"
 
 	"github.com/peter-bread/gamon3/internal/gamon3cmd"
 
@@ -47,17 +49,40 @@ the correct account.`,
 			ghHosts gamon3cmd.GHHosts
 		)
 
-		// TODO: Check $GAMON3_ACCOUNT.
+		// Check $GAMON3_ACCOUNT.
 		// If not set, continue.
 		// If set, check it is a valid account (using 'hosts.yml').
 		// If it is valid, switch to it and ignore 'mapping.json'.
-		// If it is not valid, a) error and exit, or b) error and
-		// fallback to 'mapping.json'.
+		// If it is not valid, error and fallback to 'mapping.json'.
 		//
 		// This will allow for even finer grained control.
-		// It will be useful for people who do not split projects
+		// It is useful for people who do not split projects
 		// by GitHub account. It does depend on something like direnv
 		// though.
+		//
+		// IMPORTANT: $GAMON3_ACCOUNT *must* be exported.
+
+		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		if err := ghHosts.Load(ghHostsPath); err != nil {
+			log.Fatalln(err)
+		}
+
+		currentAccount := ghHosts.GetCurrentUser()
+
+		if account, found := os.LookupEnv("GAMON3_ACCOUNT"); found {
+			users := ghHosts.GetAllUsers()
+			if slices.Contains(users, account) {
+				switchIfNeeded(account, currentAccount)
+				return
+			} else {
+				fmt.Println(account + " is not a valid account")
+				fmt.Println("Falling back to config file")
+			}
+		}
 
 		// TODO: Walk up filetree looking for a '.gamon3.yaml' file which
 		// could contain an account to use. I will probably put this behind
@@ -73,6 +98,8 @@ the correct account.`,
 		// direnv. The downside is that it will have some effect on performance,
 		// however it may be negligible.
 
+		// ------------------------------------------------------------------------
+
 		mappingPath, err := gamon3cmd.GetMappingPath()
 		if err != nil {
 			log.Fatalln(err)
@@ -82,25 +109,20 @@ the correct account.`,
 			log.Fatalln(err)
 		}
 
+		// TODO: Use `os.Getwd`?
 		pwd := os.Getenv("PWD")
 		account := mapping.GetAccount(pwd)
 
-		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		if err := ghHosts.Load(ghHostsPath); err != nil {
-			log.Fatalln(err)
-		}
-
-		currentAccount := ghHosts.GetCurrentUser()
-
-		if account != currentAccount {
-			// TODO: Handle error.
-			exec.Command("gh", "auth", "switch", "--user", account).Run()
-		}
+		switchIfNeeded(account, currentAccount)
 	},
+}
+
+// TODO: Move to internal?
+func switchIfNeeded(account, currentAccount string) {
+	if account != currentAccount {
+		// TODO: Handle error.
+		exec.Command("gh", "auth", "switch", "--user", account).Run()
+	}
 }
 
 func init() {
