@@ -27,6 +27,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"slices"
 
 	"github.com/peter-bread/gamon3/internal/gamon3cmd"
@@ -44,10 +45,19 @@ Determines which GH CLI account should be active and compares
 this to the currently active account. If they differ, it will switch to
 the correct account.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var (
-			mapping gamon3cmd.Mapping
-			ghHosts gamon3cmd.GHHosts
-		)
+		var ghHosts gamon3cmd.GHHosts
+
+		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		if err := ghHosts.Load(ghHostsPath); err != nil {
+			log.Fatalln(err)
+		}
+
+		currentAccount := ghHosts.GetCurrentUser()
+		users := ghHosts.GetAllUsers()
 
 		// Check $GAMON3_ACCOUNT.
 		// If not set, continue.
@@ -62,29 +72,17 @@ the correct account.`,
 		//
 		// IMPORTANT: $GAMON3_ACCOUNT *must* be exported.
 
-		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		if err := ghHosts.Load(ghHostsPath); err != nil {
-			log.Fatalln(err)
-		}
-
-		currentAccount := ghHosts.GetCurrentUser()
-
 		if account, found := os.LookupEnv("GAMON3_ACCOUNT"); found {
-			users := ghHosts.GetAllUsers()
 			if slices.Contains(users, account) {
 				switchIfNeeded(account, currentAccount)
 				return
 			} else {
 				fmt.Println(account + " is not a valid account")
-				fmt.Println("Falling back to config file")
+				fmt.Println("Falling back to main config file")
 			}
 		}
 
-		// TODO: Walk up filetree looking for a '.gamon3.yaml' file which
+		// Walk up filetree looking for a '.gamon3.yaml' file which
 		// could contain an account to use. I will probably put this behind
 		// an optional flag, perhaps '--walk' (name TBD). This would make it
 		// and opt-in feature. The reason for this is that it adds overhead and
@@ -98,7 +96,51 @@ the correct account.`,
 		// direnv. The downside is that it will have some effect on performance,
 		// however it may be negligible.
 
-		// ------------------------------------------------------------------------
+		start, _ := os.Getwd()
+		stop, _ := os.UserHomeDir()
+
+		var (
+			localConfig     gamon3cmd.LocalConfig
+			localConfigPath string
+		)
+
+		dir := start
+
+		for {
+
+			// TODO: Check for .gamon.yml.
+			candidate := filepath.Join(dir, ".gamon.yaml")
+			if _, err := os.Stat(candidate); err == nil {
+				localConfigPath = candidate
+				break
+			}
+
+			parent := filepath.Dir(dir)
+
+			if dir == stop || parent == dir {
+				break
+			}
+
+			dir = parent
+		}
+
+		if localConfigPath != "" {
+
+			localConfig.Load(localConfigPath)
+
+			account := localConfig.Account
+
+			if slices.Contains(users, account) {
+				switchIfNeeded(account, currentAccount)
+				return
+			} else {
+				fmt.Println("Invalid local config file: " + localConfigPath)
+				fmt.Println("Falling back to main config file")
+			}
+		}
+
+		// Check 'mapping.json', i.e. main user config.
+		var mapping gamon3cmd.Mapping
 
 		mappingPath, err := gamon3cmd.GetMappingPath()
 		if err != nil {
