@@ -105,14 +105,16 @@ the correct account.`,
 		)
 
 		dir := start
+		candidates := []string{".gamon.yaml", ".gamon.yml"}
 
 		for {
 
-			// TODO: Check for .gamon.yml.
-			candidate := filepath.Join(dir, ".gamon.yaml")
-			if _, err := os.Stat(candidate); err == nil {
-				localConfigPath = candidate
-				break
+			for _, name := range candidates {
+				candidate := filepath.Join(dir, name)
+				if _, err := os.Stat(candidate); err == nil {
+					localConfigPath = candidate
+					break
+				}
 			}
 
 			parent := filepath.Dir(dir)
