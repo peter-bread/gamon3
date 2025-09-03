@@ -42,7 +42,13 @@ var runCmd = &cobra.Command{
 
 Determines which GH CLI account should be active and compares
 this to the currently active account. If they differ, it will switch to
-the correct account.`,
+the correct account.
+
+There are three methods used to determine which account should be used:
+1. $GAMON3_ACCOUNT environment variable
+2. Checking '.gamon.yaml' or '.gamon.yml' local config file
+3. JSON mapping generated from 'config.yaml'
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var ghHosts gamon3cmd.GHHosts
 
