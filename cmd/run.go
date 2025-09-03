@@ -120,22 +120,14 @@ There are three methods used to determine which account should be used:
 			}
 		}
 
-		// Check 'mapping.json', i.e. main user config.
-		var mapping gamon3cmd.Mapping
+		// Check main config file.
 
-		mappingPath, err := gamon3cmd.GetMappingPath()
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		if err := mapping.Load(mappingPath); err != nil {
-			log.Fatalln(err)
-		}
-
-		// TODO: Use `os.Getwd`?
+		var config gamon3cmd.Config
+		configPath, _ := gamon3cmd.GetConfigPath()
+		fmt.Println(configPath)
+		config.Load(configPath)
 		pwd := os.Getenv("PWD")
-		account := mapping.GetAccount(pwd)
-
+		account := config.GetAccount(pwd)
 		switchIfNeeded(account, currentAccount)
 	},
 }

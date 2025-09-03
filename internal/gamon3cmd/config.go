@@ -1,4 +1,4 @@
-// Package ghswitch provides functions to switch gh accounts.
+// Package gamon3cmd provides functions to switch gh accounts.
 package gamon3cmd
 
 import (
@@ -122,26 +122,19 @@ func GetConfigPath() (string, error) {
 		log.Fatalln(err)
 	}
 
-	var configPath string
-	configPath1 := filepath.Join(configDir, "config.yaml")
-	configPath2 := filepath.Join(configDir, "config.yml")
+	candidates := []string{"config.yaml", "config.yml"}
 
-	if _, err := os.Stat(configPath1); err == nil {
-		configPath = configPath1
-	} else if _, err := os.Stat(configPath2); err == nil {
-		configPath = configPath2
-	} else {
-		configPath = ""
+	for _, name := range candidates {
+		candidate := filepath.Join(configDir, name)
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate, nil
+		}
 	}
 
-	if configPath == "" {
-		return "", fmt.Errorf("config: Config file does not exist")
-	}
-
-	return configPath, nil
+	return "", fmt.Errorf("config: Config file does not exist")
 }
 
-func (c *Config) printYAML() {
+func (c *Config) PrintYAML() {
 	data, err := yaml.Marshal(c)
 	if err != nil {
 		log.Fatalln(err)
@@ -149,6 +142,28 @@ func (c *Config) printYAML() {
 	fmt.Println(string(data))
 }
 
-func (c *Config) printRaw() {
+func (c *Config) PrintRaw() {
 	fmt.Println(c)
+}
+
+func normalise(path string) string {
+	return filepath.Clean(os.ExpandEnv(path))
+}
+
+func (c *Config) GetAccount(dir string) string {
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		return c.Default
+	}
+
+	for account, paths := range c.Accounts {
+		for _, path := range paths {
+			norm := normalise(path)
+			if strings.HasPrefix(abs, norm) {
+				return account
+			}
+		}
+	}
+
+	return c.Default
 }

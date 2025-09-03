@@ -66,10 +66,7 @@ Quickstart:
           - $HOME/Documents/university
           - /some/other/path/
 
-3.  Run 'gamon3 map'. This should be run whenever you update your config.
-    It may be wise to add this to your shell rc file.
-
-4.  Create a hook in your shell rc file. Bash and Zsh are supported OOTB,
+3.  Create a hook in your shell rc file. Bash and Zsh are supported OOTB,
     for other shells you will need to create the hook yourself.
 
     .bashrc:
