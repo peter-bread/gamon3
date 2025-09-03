@@ -27,7 +27,6 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"slices"
 
 	"github.com/peter-bread/gamon3/internal/gamon3cmd"
@@ -96,35 +95,9 @@ the correct account.`,
 		// direnv. The downside is that it will have some effect on performance,
 		// however it may be negligible.
 
-		start, _ := os.Getwd()
-		stop, _ := os.UserHomeDir()
+		var localConfig gamon3cmd.LocalConfig
 
-		var (
-			localConfig     gamon3cmd.LocalConfig
-			localConfigPath string
-		)
-
-		dir := start
-		candidates := []string{".gamon.yaml", ".gamon.yml"}
-
-		for {
-
-			for _, name := range candidates {
-				candidate := filepath.Join(dir, name)
-				if _, err := os.Stat(candidate); err == nil {
-					localConfigPath = candidate
-					break
-				}
-			}
-
-			parent := filepath.Dir(dir)
-
-			if dir == stop || parent == dir {
-				break
-			}
-
-			dir = parent
-		}
+		localConfigPath := gamon3cmd.GetLocalConfigPath()
 
 		if localConfigPath != "" {
 
