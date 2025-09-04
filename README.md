@@ -27,17 +27,24 @@ Zsh:
 eval "$(gamon3 hook zsh)"
 ```
 
-### Configure Gamon3
+### 3. Configure Gamon3
 
-See [Configuration](#configuration)
-
-## Configuration
-
-Create a config file.
+As a minimum, create a config file:
 
 ```bash
 mkdir -p "$HOME/.config/gamon3" && touch "$HOME/.config/gamon3/config.yaml"
 ```
+
+Then put this inside:
+
+```yaml
+---
+default: <your-primary-github-account>
+```
+
+For more detail, see [Configuration](#configuration).
+
+## Configuration
 
 ### Config File Location
 
@@ -70,13 +77,6 @@ accounts:
     - $HOME/other-stuff/
 ```
 
-A minimal `config.yaml` would just be:
-
-```yaml
----
-default: primary-account
-```
-
 This config file is especially useful if projects are organised by GitHub
 account.
 
@@ -94,7 +94,7 @@ account.
 The default configuration file can be overridden in two ways:
 
 - a local `.gamon.yaml` config file, or
-- the `GAMON3_ACCOUNT` environment variable
+- the `GAMON3_ACCOUNT` environment variable.
 
 These overrides are useful if projects are not always organised by GitHub
 account.
@@ -115,4 +115,5 @@ account: some-account
 #### Environment Variable
 
 Gamon3 will check to see if the `GAMON3_ACCOUNT` environment variable has been
-set to a valid GitHub account.
+set to a valid GitHub account. If it has, this will override both `.gamon.yaml`
+and `config.yaml`.
