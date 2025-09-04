@@ -3,7 +3,6 @@ package gamon3cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"slices"
@@ -53,9 +52,7 @@ func (c *Config) ValidateUsers(allowedUsers []string) error {
 
 	if c.Default == "" {
 		errs = append(errs, "config: 'default' field is required")
-	}
-
-	if !slices.Contains(allowedUsers, c.Default) {
+	} else if !slices.Contains(allowedUsers, c.Default) {
 		errs = append(errs, "config: '"+c.Default+"' has not been registered with GH CLI")
 	}
 
@@ -99,11 +96,11 @@ func GetConfigDir() (string, error) {
 func GetConfigPath() (string, error) {
 	configDir, err := GetConfigDir()
 	if err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 
 	if err := os.MkdirAll(configDir, 0755); err != nil {
-		log.Fatalln(err)
+		return "", err
 	}
 
 	candidates := []string{"config.yaml", "config.yml"}

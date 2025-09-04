@@ -20,11 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+// Package run defines the `run` command.
+//
+// This command will switch to the requested GitHub account if required.
 package run
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"slices"
@@ -34,7 +36,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// RunCmd represents the run command
+// RunCmd represents the run command.
 var RunCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Switches GH CLI account if necessary",
@@ -47,18 +49,20 @@ the correct account.
 There are three methods used to determine which account should be used:
 1. $GAMON3_ACCOUNT environment variable
 2. Checking '.gamon.yaml' or '.gamon.yml' local config file
-3. JSON mapping generated from 'config.yaml'
+3. Main user config file 'config.yaml'
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		var ghHosts gamon3cmd.GHHosts
 
 		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
 		if err != nil {
-			log.Fatalln(err)
+			fmt.Println("[ERROR] Failed to get path for GH CLI 'hosts.yml'")
+			os.Exit(1)
 		}
 
 		if err := ghHosts.Load(ghHostsPath); err != nil {
-			log.Fatalln(err)
+			fmt.Println("[ERROR] Failed to load GH CLI 'hosts.yml'")
+			os.Exit(1)
 		}
 
 		currentAccount := ghHosts.GetCurrentUser()
@@ -72,8 +76,8 @@ There are three methods used to determine which account should be used:
 				switchIfNeeded(account, currentAccount)
 				return
 			} else {
-				fmt.Println(account + " is not a valid account")
-				fmt.Println("Falling back to main config file...")
+				fmt.Printf("[WARN] '%s' is not a valid account\n", account)
+				fmt.Println("[INFO] Falling back to local config file")
 			}
 		}
 
@@ -85,9 +89,9 @@ There are three methods used to determine which account should be used:
 
 		if localConfigPath, err := gamon3cmd.GetLocalConfigPath(); err == nil {
 			if err := localConfig.Load(localConfigPath, users); err != nil {
-				fmt.Println("Invalid local config file: " + localConfigPath)
+				fmt.Printf("[WARN] '%s' is not a valid local config file\n", localConfigPath)
 				fmt.Println(err)
-				fmt.Println("Falling back to main config file...")
+				fmt.Println("[INFO] Falling back to main config file")
 			} else {
 				switchIfNeeded(localConfig.Account, currentAccount)
 				return
@@ -104,14 +108,14 @@ There are three methods used to determine which account should be used:
 		}
 
 		if err := config.Load(configPath, users); err != nil {
-			fmt.Println("Invalid config file: " + configPath)
+			fmt.Printf("[ERROR] '%s' is not a valid local config file\n", configPath)
 			fmt.Println(err)
-			fmt.Println("Exiting...")
-		} else {
-			pwd := os.Getenv("PWD")
-			account := config.GetAccount(pwd)
-			switchIfNeeded(account, currentAccount)
+			os.Exit(1)
 		}
+
+		pwd := os.Getenv("PWD")
+		account := config.GetAccount(pwd)
+		switchIfNeeded(account, currentAccount)
 	},
 }
 

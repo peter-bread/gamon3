@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
-	"strings"
 
 	"github.com/goccy/go-yaml"
 )
@@ -40,18 +39,12 @@ func (l *LocalConfig) Validate(allowedUsers []string) error {
 }
 
 func (l *LocalConfig) ValidateUsers(allowedUsers []string) error {
-	var errs []string
-
 	if l.Account == "" {
-		errs = append(errs, "local config: 'default' field is required")
+		return fmt.Errorf("%s", "local config: 'account' field is required")
 	}
 
 	if !slices.Contains(allowedUsers, l.Account) {
-		errs = append(errs, "local config: '"+l.Account+"' has not been registered with GH CLI")
-	}
-
-	if len(errs) > 0 {
-		return fmt.Errorf("%s", strings.Join(errs, "\n"))
+		return fmt.Errorf("%s: '%s' %s", "local config", l.Account, "has not been registered with GH CLI")
 	}
 
 	return nil
