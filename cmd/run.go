@@ -65,16 +65,6 @@ There are three methods used to determine which account should be used:
 		users := ghHosts.GetAllUsers()
 
 		// Check $GAMON3_ACCOUNT.
-		// If not set, continue.
-		// If set, check it is a valid account (using 'hosts.yml').
-		// If it is valid, switch to it and ignore 'mapping.json'.
-		// If it is not valid, error and fallback to 'mapping.json'.
-		//
-		// This will allow for even finer grained control.
-		// It is useful for people who do not split projects
-		// by GitHub account. It does depend on something like direnv
-		// though.
-		//
 		// IMPORTANT: $GAMON3_ACCOUNT *must* be exported.
 
 		if account, found := os.LookupEnv("GAMON3_ACCOUNT"); found {
@@ -83,52 +73,45 @@ There are three methods used to determine which account should be used:
 				return
 			} else {
 				fmt.Println(account + " is not a valid account")
-				fmt.Println("Falling back to main config file")
+				fmt.Println("Falling back to main config file...")
 			}
 		}
 
-		// Walk up filetree looking for a '.gamon3.yaml' file which
-		// could contain an account to use. I will probably put this behind
-		// an optional flag, perhaps '--walk' (name TBD). This would make it
-		// and opt-in feature. The reason for this is that it adds overhead and
-		// this command should run as fast as possible. In the future it is
-		// possible that this becomes the default behaviour and users need to
-		// opt-out, maybe by passing the `--no-walk` flag. It should also stop
-		// walking at the $HOME directory, at which point it falls back to
-		// 'mapping.json' and likely then falls back to 'default'.
-		//
-		// This will also allow for finer grained control without depending on
-		// direnv. The downside is that it will have some effect on performance,
-		// however it may be negligible.
+		// Walk up filetree looking for a local '.gamon3.yaml' file.
+		// It should also stop walking at the $HOME directory, at which point it
+		// falls back to 'config.yaml'.
 
 		var localConfig gamon3cmd.LocalConfig
 
-		localConfigPath := gamon3cmd.GetLocalConfigPath()
-
-		if localConfigPath != "" {
-
-			localConfig.Load(localConfigPath)
-
-			account := localConfig.Account
-
-			if slices.Contains(users, account) {
-				switchIfNeeded(account, currentAccount)
-				return
-			} else {
+		if localConfigPath, err := gamon3cmd.GetLocalConfigPath(); err == nil {
+			if err := localConfig.Load(localConfigPath, users); err != nil {
 				fmt.Println("Invalid local config file: " + localConfigPath)
-				fmt.Println("Falling back to main config file")
+				fmt.Println(err)
+				fmt.Println("Falling back to main config file...")
+			} else {
+				switchIfNeeded(localConfig.Account, currentAccount)
+				return
 			}
 		}
 
-		// Check main config file.
+		// Check main 'config.yaml' file.
 
 		var config gamon3cmd.Config
-		configPath, _ := gamon3cmd.GetConfigPath()
-		fmt.Println(configPath)
-		config.Load(configPath)
-		pwd := os.Getenv("PWD")
-		account := config.GetAccount(pwd)
-		switchIfNeeded(account, currentAccount)
+
+		configPath, err := gamon3cmd.GetConfigPath()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		if err := config.Load(configPath, users); err != nil {
+			fmt.Println("Invalid config file: " + configPath)
+			fmt.Println(err)
+			fmt.Println("Exiting...")
+		} else {
+			pwd := os.Getenv("PWD")
+			account := config.GetAccount(pwd)
+			switchIfNeeded(account, currentAccount)
+		}
 	},
 }
 

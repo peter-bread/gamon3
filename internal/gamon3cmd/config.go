@@ -18,19 +18,10 @@ type Config struct {
 	Default  string              `yaml:"default"`
 }
 
-// MapAccounts runs the function `f` on all acounts in a `Config`.
-// This function modifies `Config` in-place.
-func (c *Config) MapAccounts(f func(string) string) {
-	for account, paths := range c.Accounts {
-		for i, p := range paths {
-			paths[i] = f(p)
-		}
-		c.Accounts[account] = paths
-	}
-}
-
-// Load reads `Config` data from a YAML file located at `path`.
-func (c *Config) Load(path string) error {
+// Load reads `Config` data from a YAML file located at `path`. It then
+// validates this data by comparing it to a list of `users`. This list
+// should be obtained from a `GHHosts` structure.
+func (c *Config) Load(path string, allowedUsers []string) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
@@ -40,15 +31,15 @@ func (c *Config) Load(path string) error {
 		return err
 	}
 
-	if err := c.Validate(); err != nil {
+	if err := c.Validate(allowedUsers); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (c *Config) Validate() error {
-	if err := c.ValidateUsers(); err != nil {
+func (c *Config) Validate(allowedUsers []string) error {
+	if err := c.ValidateUsers(allowedUsers); err != nil {
 		return err
 	}
 
@@ -57,37 +48,30 @@ func (c *Config) Validate() error {
 	return nil
 }
 
-func (c *Config) ValidateUsers() error {
+func (c *Config) ValidateUsers(allowedUsers []string) error {
 	var errs []string
-	var ghHosts GHHosts
-
-	ghHostsPath, err := GetGHHostsPath()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	if err := ghHosts.Load(ghHostsPath); err != nil {
-		log.Fatalln(err)
-	}
 
 	if c.Default == "" {
 		errs = append(errs, "config: 'default' field is required")
 	}
 
-	users := ghHosts.GetAllUsers()
-
-	if !slices.Contains(users, c.Default) {
+	if !slices.Contains(allowedUsers, c.Default) {
 		errs = append(errs, "config: '"+c.Default+"' has not been registered with GH CLI")
+	}
+
+	if len(c.Accounts) == 0 {
+		errs = append(errs, "config: 'accounts' section is either empty or missing")
 	}
 
 	for account := range c.Accounts {
 		if account == "" {
 			errs = append(errs, "config: account names must be non-empty")
 		}
-		if !slices.Contains(users, account) {
+		if !slices.Contains(allowedUsers, account) {
 			errs = append(errs, "config: '"+account+"' has not been registered with GH CLI")
 		}
 	}
+
 	if len(errs) > 0 {
 		return fmt.Errorf("%s", strings.Join(errs, "\n"))
 	}
@@ -132,18 +116,6 @@ func GetConfigPath() (string, error) {
 	}
 
 	return "", fmt.Errorf("config: Config file does not exist")
-}
-
-func (c *Config) PrintYAML() {
-	data, err := yaml.Marshal(c)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(string(data))
-}
-
-func (c *Config) PrintRaw() {
-	fmt.Println(c)
 }
 
 func normalise(path string) string {
