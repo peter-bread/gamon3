@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package cmd
+package hook
 
 import (
 	"fmt"
@@ -28,28 +28,31 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// hookCmd represents the hook command
-var hookCmd = &cobra.Command{
-	Use:   "hook",
-	Short: "Prints the shell function used to execute Gamon3 on cd",
-	Long: `Prints the shell function used to execute Gamon3 on cd.
-
-This should be evaluated in your shell rc file.`,
+// BashCmd represents the bash command
+var BashCmd = &cobra.Command{
+	Use:   "bash",
+	Short: "Prints bash function to hook on cd",
+	Long:  `Prints bash function to hook on cd.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("hook called")
+		script := `
+if [ -z "$PROMPT_COMMAND" ]; then
+	PROMPT_COMMAND="gamon3 run"
+else
+	PROMPT_COMMAND="$PROMPT_COMMAND; gamon3 run"
+fi
+`
+		fmt.Println(script)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(hookCmd)
-
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// hookCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// bashCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// hookCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// bashCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

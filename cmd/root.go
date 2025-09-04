@@ -26,6 +26,8 @@ package cmd
 import (
 	"os"
 
+	"github.com/peter-bread/gamon3/cmd/hook"
+	"github.com/peter-bread/gamon3/cmd/run"
 	"github.com/spf13/cobra"
 )
 
@@ -89,6 +91,8 @@ func Execute() {
 }
 
 func init() {
+	rootCmd.AddCommand(run.RunCmd)
+	rootCmd.AddCommand(hook.HookCmd)
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.

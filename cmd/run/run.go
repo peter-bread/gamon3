@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package cmd
+package run
 
 import (
 	"fmt"
@@ -34,8 +34,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// runCmd represents the run command
-var runCmd = &cobra.Command{
+// RunCmd represents the run command
+var RunCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Switches GH CLI account if necessary",
 	Long: `Switches GH CLI account if necessary.
@@ -124,8 +124,6 @@ func switchIfNeeded(account, currentAccount string) {
 }
 
 func init() {
-	rootCmd.AddCommand(runCmd)
-
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
