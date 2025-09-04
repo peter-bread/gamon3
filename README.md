@@ -7,75 +7,72 @@ Automatically switch GitHub CLI account on `cd`.
 - Go 1.25
 - [`gh`](https://cli.github.com/) v2.40.0+
 
-## Installation
+## Get Started
 
-## Usage
+### 1. Install
 
-### GH CLI
+TODO: Add installation instructions.
 
-Authenticate any GitHub accounts with the GH CLI tool.
+### 2. Setup shell to use Gamon3
 
-### Config File
+Bash:
 
-First create `config.yaml` one of:
+```bash
+eval "$(gamon3 hook bash)"
+```
 
-1. `$GAMON3_CONFIG_DIR`
-1. `$XDG_CONFIG_HOME/gamon3`
-1. `$HOME/.config/gamon3`
+Zsh:
 
-**NOTE:** `config.yaml` takes precedence over `config.yml` if both exist.
+```bash
+eval "$(gamon3 hook zsh)"
+```
 
-There are two top-level fields:
+### Configure Gamon3
 
-- `default`: (required) This should be your primary, likely personal, GitHub
-  account.
-- `accounts`: (optional) This is a mapping of GitHub accounts to filepaths in
-  which they should be used. Environment variables can be used.
+## Configuration
 
-> [!IMPORTANT]
-> You **CANNOT** use `~` for your home directory. Use `$HOME` instead.
+```bash
+mkdir -p "$HOME/.config/gamon3" && touch "$HOME/.config/gamon3/config.yaml"
+```
 
-Example:
+### Config File Location
+
+Gamon3 will check 3 locations for a config file:
+
+1. `$GAMON3_CONFIG_DIR/config.yaml`
+1. `$XDG_CONFIG_HOME/gamon3/config.yaml`
+1. `$HOME/.config/gamon3/config.yaml`
+
+Using `config.yml` is also supported.
+
+TODO: Info about config file.
+
+E.g.
 
 ```yaml
 ---
-default: peter-bread        # (required)
+default: some-account
 accounts:
-  ak22112:
-    - $DEVELOPER/ak22112/
 ```
 
-### Setup
+### Overrides
 
-Run this after editing your config.
+The default configuration file can be overridden in two ways.
 
-Alternatively, put this in your shell rc and restart your shell after
-editing your config file.
+#### Local Config File
 
-```bash
-gamon3 setup
+Gamon3 will search (inclusively) upward from `$PWD` to `$HOME` for a file
+called `.gamon.yaml` or `.gamon.yml`. This file should contain a single
+`account` key with a `value` being the GitHub account to use.
+
+E.g.
+
+```yaml
+---
+account: some-account
 ```
 
-### Hook
+#### Environment Variable
 
-Create a hook for shell `cd` command in your shell rc file.
-
-bash:
-
-```bash
-cd() {
-  builtin cd "$@" || exit
-  gamon3 run
-}
-```
-
-zsh:
-
-```bash
-_gamon3_gh_switch() {
-  gamon3 run
-}
-
-autoload -U add-zsh-hook
-add-zsh-hook chpwd _gamon3_gh_switch
-```
+Gamon3 will check to see if the `GAMON3_ACCOUNT` environment variable has been
+set to a valid GitHub account.
