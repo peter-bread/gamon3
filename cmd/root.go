@@ -39,45 +39,6 @@ var rootCmd = &cobra.Command{
 
 Gamon3 is a tool that enables automatic GH CLI account switching based on a
 context, specifically 'pwd'. It does this by hooking into the 'cd' command.
-
-Quickstart:
-
-1.  Create 'config.yaml' or 'config.yml' in one of the following directories:
-      a. $GAMON3_CONFIG_DIR/
-      b. $XDG_CONFIG_HOME/gamon3/
-      c. $HOME/.config/gamon3/
-
-    Gamon3 will check these directories in the order given above, and it will
-    look for 'config.yaml' before 'config.yml'.
-
-2.  Add some data to the config file. There are two top-level fields:
-    - default:  (required) This should be your primary, likely personal, GitHub
-      account.
-    - accounts: (optional) Mapping of GitHub accounts to lists of directories in
-      which they should be used. Environment variables can be used.
-
-    DO NOT USE '~' TO REPRESENT YOUR HOME DIRECTORY. USE '$HOME' INSTEAD.
-
-    Example:
-
-      ---
-      default: peter-bread
-      accounts:
-        ak22112:
-          - $DEVELOPER/ak22112/
-          - $HOME/Documents/university
-          - /some/other/path/
-
-3.  Create a hook in your shell rc file. Bash and Zsh are supported OOTB,
-    for other shells you will need to create the hook yourself.
-
-    .bashrc:
-
-      eval "$(gamon3 hook bash)"
-
-    .zshrc:
-
-      eval "$(gamon3 hook zsh)"
 `,
 }
 
@@ -103,3 +64,42 @@ func init() {
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
+
+// Quickstart:
+//
+// 1.  Create 'config.yaml' or 'config.yml' in one of the following directories:
+//       a. $GAMON3_CONFIG_DIR/
+//       b. $XDG_CONFIG_HOME/gamon3/
+//       c. $HOME/.config/gamon3/
+//
+//     Gamon3 will check these directories in the order given above, and it will
+//     look for 'config.yaml' before 'config.yml'.
+//
+// 2.  Add some data to the config file. There are two top-level fields:
+//     - default:  (required) This should be your primary, likely personal, GitHub
+//       account.
+//     - accounts: (optional) Mapping of GitHub accounts to lists of directories in
+//       which they should be used. Environment variables can be used.
+//
+//     DO NOT USE '~' TO REPRESENT YOUR HOME DIRECTORY. USE '$HOME' INSTEAD.
+//
+//     Example:
+//
+//       ---
+//       default: peter-bread
+//       accounts:
+//         ak22112:
+//           - $DEVELOPER/ak22112/
+//           - $HOME/Documents/university
+//           - /some/other/path/
+//
+// 3.  Create a hook in your shell rc file. Bash and Zsh are supported OOTB,
+//     for other shells you will need to create the hook yourself.
+//
+//     .bashrc:
+//
+//       eval "$(gamon3 hook bash)"
+//
+//     .zshrc:
+//
+//       eval "$(gamon3 hook zsh)"
