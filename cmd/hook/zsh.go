@@ -28,8 +28,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ZshCmd represents the zsh command
-var ZshCmd = &cobra.Command{
+// zshCmd represents the zsh command
+var zshCmd = &cobra.Command{
 	Use:   "zsh",
 	Short: "Prints zsh function to hook on cd",
 	Long:  `Prints zsh function to hook on cd.`,

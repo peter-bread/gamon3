@@ -42,8 +42,8 @@ This should be evaluated in your shell rc file.`,
 }
 
 func init() {
-	HookCmd.AddCommand(BashCmd)
-	HookCmd.AddCommand(ZshCmd)
+	HookCmd.AddCommand(bashCmd)
+	HookCmd.AddCommand(zshCmd)
 
 	// Here you will define your flags and configuration settings.
 

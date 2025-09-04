@@ -28,8 +28,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// BashCmd represents the bash command
-var BashCmd = &cobra.Command{
+// bashCmd represents the bash command
+var bashCmd = &cobra.Command{
 	Use:   "bash",
 	Short: "Prints bash function to hook on cd",
 	Long:  `Prints bash function to hook on cd.`,
