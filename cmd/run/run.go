@@ -105,6 +105,7 @@ There are three methods used to determine which account should be used:
 		configPath, err := gamon3cmd.GetConfigPath()
 		if err != nil {
 			fmt.Println(err)
+			os.Exit(1)
 		}
 
 		if err := config.Load(configPath, users); err != nil {
