@@ -1,35 +1,101 @@
+/*
+Copyright © 2025 Peter Sheehan
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+// Package cmd defines the commands for this tool.
 package cmd
 
 import (
-	"flag"
-	"fmt"
 	"os"
-	"peter-bread/gamon3/cmd/run"
-	"peter-bread/gamon3/cmd/setup"
+
+	"github.com/spf13/cobra"
 )
 
-func usage() {
-	fmt.Println("Usage: gamon3 <setup | run>")
-	os.Exit(1)
+// rootCmd represents the base command when called without any subcommands
+var rootCmd = &cobra.Command{
+	Use:   "gamon3",
+	Short: "Automatic GH CLI account switching on cd",
+	Long: `Automatic GH CLI account switching on cd.
+
+Gamon3 is a tool that enables automatic GH CLI account switching based on a
+context, specifically 'pwd'. It does this by hooking into the 'cd' command.
+
+Quickstart:
+
+1.  Create 'config.yaml' or 'config.yml' in one of the following directories:
+      a. $GAMON3_CONFIG_DIR/
+      b. $XDG_CONFIG_HOME/gamon3/
+      c. $HOME/.config/gamon3/
+
+    Gamon3 will check these directories in the order given above, and it will
+    look for 'config.yaml' before 'config.yml'.
+
+2.  Add some data to the config file. There are two top-level fields:
+    - default:  (required) This should be your primary, likely personal, GitHub
+      account.
+    - accounts: (optional) Mapping of GitHub accounts to lists of directories in
+      which they should be used. Environment variables can be used.
+
+    DO NOT USE '~' TO REPRESENT YOUR HOME DIRECTORY. USE '$HOME' INSTEAD.
+
+    Example:
+
+      ---
+      default: peter-bread
+      accounts:
+        ak22112:
+          - $DEVELOPER/ak22112/
+          - $HOME/Documents/university
+          - /some/other/path/
+
+3.  Create a hook in your shell rc file. Bash and Zsh are supported OOTB,
+    for other shells you will need to create the hook yourself.
+
+    .bashrc:
+
+      eval "$(gamon3 hook bash)"
+
+    .zshrc:
+
+      eval "$(gamon3 hook zsh)"
+`,
 }
 
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	flag.Parse()
-	args := flag.Args()
-
-	if len(args) < 1 {
-		usage()
+	err := rootCmd.Execute()
+	if err != nil {
+		os.Exit(1)
 	}
+}
 
-	switch args[0] {
+func init() {
+	// Here you will define your flags and configuration settings.
+	// Cobra supports persistent flags, which, if defined here,
+	// will be global for your application.
 
-	case "setup":
-		setup.SetupCmd()
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gamon3.yaml)")
 
-	case "run":
-		run.RunCmd()
-
-	default:
-		usage()
-	}
+	// Cobra also supports local flags, which will only run
+	// when this action is called directly.
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
