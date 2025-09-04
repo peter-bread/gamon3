@@ -29,7 +29,11 @@ eval "$(gamon3 hook zsh)"
 
 ### Configure Gamon3
 
+See [Configuration](#configuration)
+
 ## Configuration
+
+Create a config file.
 
 ```bash
 mkdir -p "$HOME/.config/gamon3" && touch "$HOME/.config/gamon3/config.yaml"
@@ -45,19 +49,55 @@ Gamon3 will check 3 locations for a config file:
 
 Using `config.yml` is also supported.
 
-TODO: Info about config file.
+### Config File Structure
+
+| Field      | Required | Type                   | Description                                                            |
+| ---------- | -------- | ---------------------- | ---------------------------------------------------------------------- |
+| `default`  | yes      | `string`               | Primary GitHub account for the user                                    |
+| `accounts` | no       | `string` -> `string[]` | Mapping of GitHub accounts to directories in which they should be used |
 
 E.g.
 
 ```yaml
 ---
-default: some-account
+default: primary-account
 accounts:
+  work-account:
+    - $HOME/repos/work
+    - $HOME/work/github/
+    - $WORK
+  some-other-account:
+    - $HOME/other-stuff/
 ```
+
+A minimal `config.yaml` would just be:
+
+```yaml
+---
+default: primary-account
+```
+
+This config file is especially useful if projects are organised by GitHub
+account.
+
+> [!IMPORTANT]
+> You **CANNOT** use `~` for your home directory in `config.yaml`.
+>
+> Use `$HOME` instead.
+>
+> ---
+>
+> _This should be supported eventually. See [this issue](https://github.com/peter-bread/gamon3/issues/5)_.
 
 ### Overrides
 
-The default configuration file can be overridden in two ways.
+The default configuration file can be overridden in two ways:
+
+- a local `.gamon.yaml` config file, or
+- the `GAMON3_ACCOUNT` environment variable
+
+These overrides are useful if projects are not always organised by GitHub
+account.
 
 #### Local Config File
 
