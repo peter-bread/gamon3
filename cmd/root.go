@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// Package cmd defines the commands for this tool.
+// Package cmd defines root command and is the entry point for this tool.
 package cmd
 
 import (

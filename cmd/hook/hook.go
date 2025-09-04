@@ -20,6 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+// Package hook defines the `hook` command and its subcommands, `bash` and `zsh`.
+//
+// These subcommands print code for the shell to execute to automatically call
+// `gamon3 run` on 'cd'.
 package hook
 
 import (
