@@ -9,6 +9,11 @@ Automatically switch GitHub CLI account on `cd`.
 
 ## Get Started
 
+### 0. Authenticate with GH CLI
+
+Before using Gamon3, you will need to [authenticate your GitHub
+account(s)](https://cli.github.com/manual/gh_auth_login) with the GH CLI.
+
 ### 1. Install
 
 TODO: Add installation instructions.
