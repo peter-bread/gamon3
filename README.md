@@ -7,18 +7,11 @@ Automatically switch GitHub CLI account on `cd`.
 - Go 1.25
 - [`gh`](https://cli.github.com/) v2.40.0+
 
-## Get Started
-
-### 0. Authenticate with GH CLI
-
-Before using Gamon3, you will need to [authenticate your GitHub
-account(s)](https://cli.github.com/manual/gh_auth_login) with the GH CLI.
-
-### 1. Install
+## Install
 
 TODO: Add installation instructions.
 
-#### Build From Source
+### Build From Source
 
 ```bash
 git clone https://github.com/peter-bread/gamon3
@@ -29,7 +22,14 @@ cp ./bin/gamon3 ~/.local/bin
 
 Assuming `~/.local/bin` is in `PATH`.
 
-### 2. Setup shell to use Gamon3
+## Usage
+
+### Authenticate with GH CLI
+
+Before using Gamon3, you will need to [authenticate your GitHub
+account(s)](https://cli.github.com/manual/gh_auth_login) with the GH CLI.
+
+### Setup shell to use Gamon3
 
 #### Bash
 
@@ -55,7 +55,7 @@ Add the following to `~/.config/fish/config.fish`:
 gamon3 hook fish | source
 ```
 
-### 3. Configure Gamon3
+### Configure Gamon3
 
 As a minimum, create a config file:
 
