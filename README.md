@@ -18,6 +18,17 @@ account(s)](https://cli.github.com/manual/gh_auth_login) with the GH CLI.
 
 TODO: Add installation instructions.
 
+#### Build From Source
+
+```bash
+git clone https://github.com/peter-bread/gamon3
+cd gamon3
+make
+cp ./bin/gamon3 ~/.local/bin
+```
+
+Assuming `~/.local/bin` is in `PATH`.
+
 ### 2. Setup shell to use Gamon3
 
 #### Bash
