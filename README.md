@@ -20,16 +20,28 @@ TODO: Add installation instructions.
 
 ### 2. Setup shell to use Gamon3
 
-Bash:
+#### Bash
+
+Add the following to `~/.bashrc`:
 
 ```bash
 eval "$(gamon3 hook bash)"
 ```
 
-Zsh:
+#### Zsh
+
+Add the following to `~/.zshrc`:
 
 ```bash
 eval "$(gamon3 hook zsh)"
+```
+
+#### Fish
+
+Add the following to `~/.config/fish/config.fish`:
+
+```fish
+gamon3 hook fish | source
 ```
 
 ### 3. Configure Gamon3
