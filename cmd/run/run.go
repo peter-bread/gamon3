@@ -56,12 +56,12 @@ There are three methods used to determine which account should be used:
 
 		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
 		if err != nil {
-			fmt.Println("[ERROR] Failed to get path for GH CLI 'hosts.yml'")
+			fmt.Println("[GAMON3 ERROR] Failed to get path for GH CLI 'hosts.yml'")
 			os.Exit(1)
 		}
 
 		if err := ghHosts.Load(ghHostsPath); err != nil {
-			fmt.Println("[ERROR] Failed to load GH CLI 'hosts.yml'")
+			fmt.Println("[GAMON3 ERROR] Failed to load GH CLI 'hosts.yml'")
 			os.Exit(1)
 		}
 
@@ -76,8 +76,8 @@ There are three methods used to determine which account should be used:
 				switchIfNeeded(account, currentAccount)
 				return
 			} else {
-				fmt.Printf("[WARN] '%s' is not a valid account\n", account)
-				fmt.Println("[INFO] Falling back to local config file")
+				fmt.Printf("[GAMON3 WARN] '%s' is not a valid account\n", account)
+				fmt.Println("[GAMON3 INFO] Falling back to local config file")
 			}
 		}
 
@@ -89,9 +89,9 @@ There are three methods used to determine which account should be used:
 
 		if localConfigPath, err := gamon3cmd.GetLocalConfigPath(); err == nil {
 			if err := localConfig.Load(localConfigPath, users); err != nil {
-				fmt.Printf("[WARN] '%s' is not a valid local config file\n", localConfigPath)
+				fmt.Printf("[GAMON3 WARN] '%s' is not a valid local config file\n", localConfigPath)
 				fmt.Println(err)
-				fmt.Println("[INFO] Falling back to main config file")
+				fmt.Println("[GAMON3 INFO] Falling back to main config file")
 			} else {
 				switchIfNeeded(localConfig.Account, currentAccount)
 				return
@@ -109,7 +109,7 @@ There are three methods used to determine which account should be used:
 		}
 
 		if err := config.Load(configPath, users); err != nil {
-			fmt.Printf("[ERROR] '%s' is not a valid local config file\n", configPath)
+			fmt.Printf("[GAMON3 ERROR] '%s' is not a valid local config file\n", configPath)
 			fmt.Println(err)
 			os.Exit(1)
 		}
