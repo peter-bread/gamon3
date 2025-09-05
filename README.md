@@ -99,7 +99,7 @@ default: primary-account
 accounts:
   work-account:
     - $HOME/repos/work
-    - $HOME/work/github/
+    - ~/work/github/
     - $WORK
   some-other-account:
     - $HOME/other-stuff/
@@ -107,15 +107,6 @@ accounts:
 
 This config file is especially useful if projects are organised by GitHub
 account.
-
-> [!IMPORTANT]
-> You **CANNOT** use `~` for your home directory in `config.yaml`.
->
-> Use `$HOME` instead.
->
-> ---
->
-> _This should be supported eventually. See [this issue](https://github.com/peter-bread/gamon3/issues/5)_.
 
 ### Overrides
 

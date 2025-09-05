@@ -116,6 +116,9 @@ func GetConfigPath() (string, error) {
 }
 
 func normalise(path string) string {
+	if path == "~" || strings.HasPrefix(path, "~/") {
+		path = strings.Replace(path, "~", "$HOME", 1)
+	}
 	return filepath.Clean(os.ExpandEnv(path))
 }
 
