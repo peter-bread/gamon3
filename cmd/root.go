@@ -24,6 +24,7 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/peter-bread/gamon3/cmd/hook"
@@ -49,6 +50,10 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
+}
+
+func SetVersion(version, commit, date string) {
+	rootCmd.Version = fmt.Sprintf("v%s (built from: %s on: %s)", version, commit, date)
 }
 
 func init() {
