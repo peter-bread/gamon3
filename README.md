@@ -16,8 +16,8 @@ TODO: Add installation instructions.
 ```bash
 git clone https://github.com/peter-bread/gamon3
 cd gamon3
-make
-cp ./bin/gamon3 ~/.local/bin
+go build
+cp ./gamon3 ~/.local/bin
 ```
 
 Assuming `~/.local/bin` is in `PATH`.
