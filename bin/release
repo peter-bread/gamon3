@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+WORKFLOW="release.yaml"
+BRANCH="main"
+
+START_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+gh workflow run "$WORKFLOW" -r "$BRANCH"
+
+sleep 3
+
+while true; do
+  RUN_ID=$(gh run list \
+    --workflow "$WORKFLOW" \
+    --branch "$BRANCH" \
+    --json databaseId,createdAt,status \
+    --jq ".[] | select(.createdAt > \"$START_TIME\") | .databaseId" |
+    head -n1)
+
+  # RUN_ID=$(gh run list \
+  #   --workflow "$WORKFLOW" \
+  #   --branch "$BRANCH" \
+  #   --json databaseId,createdAt,status \
+  #   --jq ".[] | select(.createdAt > \"$START_TIME\" and (.status == \"queued\" or .status == \"in_progress\")) | .databaseId" |
+  #   head -n1)
+
+  if [ "$RUN_ID" != "" ]; then
+    echo "Found run: $RUN_ID"
+    break
+  fi
+
+  echo "Waiting for run to be scheduled..."
+  sleep 3
+done
+
+gh run watch "$RUN_ID" && {
+  echo "Fetching latest changes..."
+  git fetch origin "$BRANCH"
+  git fetch --tags
+}
+
+echo "Repo is up to date with release commit and tags."
