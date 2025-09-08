@@ -1,0 +1,15 @@
+---
+preset: conventionalcommits
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - - "@semantic-release/changelog"
+    - changelogFile: "docs/CHANGELOG.md"
+  - - "@semantic-release/git"
+    - assets:
+        - docs/CHANGELOG.md
+      message: "chore(release): ${nextRelease.version} [skip ci]"
+  - - "@semantic-release/exec"
+    - publishCmd: |
+        echo "${nextRelease.notes}" > /tmp/release-notes.md
+        goreleaser release --release-notes /tmp/release-notes.md --clean

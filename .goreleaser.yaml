@@ -12,12 +12,11 @@ builds:
   - env:
       - CGO_ENABLED=0
     goos:
-      - linux
       - darwin
+      - linux
 
 archives:
   - formats: [tar.gz]
-    # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
       {{- .Os }}_
@@ -25,17 +24,14 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+    wrap_in_directory: true
+    format_overrides:
+      - goos: darwin
+        formats: [tar.gz, zip]
 
 release:
   footer: >-
 
     ---
 
-    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+    Released by [semantic-release](https://github.com/semantic-release/semantic-release) and [GoReleaser](https://github.com/goreleaser/goreleaser).
