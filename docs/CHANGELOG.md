@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/peter-bread/gamon3/compare/v1.0.0...v1.0.1) (2025-09-08)
+
+### Bug Fixes
+
+* **root:** correct `--version` output ([abda223](https://github.com/peter-bread/gamon3/commit/abda223bb47375ac9070250add9ca394f37d16a8))
+
 ## 1.0.0 (2025-09-08)
 
 ### ⚠ BREAKING CHANGES
