@@ -24,7 +24,6 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/peter-bread/gamon3/cmd/hook"
@@ -54,7 +53,7 @@ func Execute() {
 
 func SetVersion(version, commit, date string) {
 	// rootCmd.Version = fmt.Sprintf("v%s (built from: %s on: %s)", version, commit, date)
-	rootCmd.Version = fmt.Sprintf("Gamon3 v%s", version)
+	rootCmd.Version = version
 }
 
 func init() {
