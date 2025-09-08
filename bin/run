@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+BIN="./dist/gamon3_darwin_arm64_v8.0/gamon3"
+
+TOP=$(git rev-parse --show-toplevel)
+
+cd "$TOP"
+
+if [[ ! -x $BIN ]]; then
+  make
+fi
+
+"$BIN" "$@"
