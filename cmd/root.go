@@ -52,20 +52,11 @@ func Execute() {
 }
 
 func SetVersion(version, commit, date string) {
-	// rootCmd.Version = fmt.Sprintf("v%s (built from: %s on: %s)", version, commit, date)
+	// TODO: Use `commit` and `date` in version output (MAYBE).
 	rootCmd.Version = version
 }
 
 func init() {
 	rootCmd.AddCommand(run.RunCmd)
 	rootCmd.AddCommand(hook.HookCmd)
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gamon3.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
