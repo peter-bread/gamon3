@@ -12,8 +12,11 @@ jobs:
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
-          app-id: ${{ env.HOMEBREW_DISPATCH_APP_ID }}
+          app-id: ${{ vars.HOMEBREW_DISPATCH_APP_ID }}
           private-key: ${{ secrets.HOMEBREW_DISPATCH_APP_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            homebrew-tap
 
       - uses: peter-evans/repository-dispatch@v3
         with:
