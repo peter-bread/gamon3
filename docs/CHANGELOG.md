@@ -6,6 +6,10 @@
 
 ## [1.0.2](https://github.com/peter-bread/gamon3/compare/v1.0.1...v1.0.2) (2025-09-08)
 
+### Documentation
+
+* **README:** update build from source instructions ([739751f](https://github.com/peter-bread/gamon3/commit/739751fa3947a5b9de8dc28fa84035d350fc12cf))
+
 ## [1.0.1](https://github.com/peter-bread/gamon3/compare/v1.0.0...v1.0.1) (2025-09-08)
 
 ### Bug Fixes
