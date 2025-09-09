@@ -11,6 +11,12 @@ Automatically switch GitHub CLI account on `cd`.
 
 **TODO:** Add installation instructions.
 
+### Go Install
+
+```bash
+go install github.com/peter-bread/gamon3@latest
+```
+
 ### Build From Source
 
 ```bash
