@@ -1,3 +1,9 @@
+## [1.0.5](https://github.com/peter-bread/gamon3/compare/v1.0.4...v1.0.5) (2025-09-09)
+
+### Bug Fixes
+
+* **hook:** clearer description ([9fc7618](https://github.com/peter-bread/gamon3/commit/9fc7618e155a25170f274737f72084fcbffa9459))
+
 ## [1.0.4](https://github.com/peter-bread/gamon3/compare/v1.0.3...v1.0.4) (2025-09-09)
 
 ### Documentation
