@@ -35,8 +35,8 @@ import (
 // HookCmd represents the hook command
 var HookCmd = &cobra.Command{
 	Use:   "hook",
-	Short: "Prints the shell function used to execute Gamon3 on cd",
-	Long: `Prints the shell function used to execute Gamon3 on cd.
+	Short: "Prints the shell function used to execute 'gamon3 run' on cd",
+	Long: `Prints the shell function used to execute 'gamon3 run' on cd.
 
 This should be evaluated in your shell rc file.`,
 	Run: func(cmd *cobra.Command, args []string) {
