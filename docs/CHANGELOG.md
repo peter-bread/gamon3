@@ -1,3 +1,9 @@
+## [1.0.3](https://github.com/peter-bread/gamon3/compare/v1.0.2...v1.0.3) (2025-09-09)
+
+### Documentation
+
+* **README:** specify go 1.25 or later ([c9c69cf](https://github.com/peter-bread/gamon3/commit/c9c69cfcbb0b3a53f7e70c6bc4d6e195f942e0dc))
+
 ## [1.0.2](https://github.com/peter-bread/gamon3/compare/v1.0.1...v1.0.2) (2025-09-08)
 
 ## [1.0.1](https://github.com/peter-bread/gamon3/compare/v1.0.0...v1.0.1) (2025-09-08)
