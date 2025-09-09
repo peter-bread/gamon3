@@ -20,8 +20,7 @@ jobs:
           app-id: ${{ vars.HOMEBREW_DISPATCH_APP_ID }}
           private-key: ${{ secrets.HOMEBREW_DISPATCH_APP_KEY }}
           owner: ${{ github.repository_owner }}
-          repositories: |
-            ${{ env.REPO }}
+          repositories: ${{ env.REPO }}
 
       - uses: peter-evans/repository-dispatch@v3
         with:
