@@ -9,7 +9,7 @@ Automatically switch GitHub CLI account on `cd`.
 
 ## Install
 
-TODO: Add installation instructions.
+**_TODO:_** Add installation instructions.
 
 ### Build From Source
 
