@@ -3,6 +3,7 @@ preset: conventionalcommits
 
 plugins:
   - - "@semantic-release/commit-analyzer"
+    # See 'https://github.com/semantic-release/commit-analyzer#releaserules'.
     - releaseRules:
         - type: perf
           release: minor
@@ -18,6 +19,9 @@ plugins:
           release: patch
 
   - - "@semantic-release/release-notes-generator"
+    # See 'https://github.com/semantic-release/release-notes-generator#options'.
+    # See 'https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits#specific-options'.
+    # See 'https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.2.0/README.md#types'.
     - presetConfig:
         types:
           - type: feat
