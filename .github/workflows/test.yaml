@@ -7,6 +7,11 @@ on:
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+
+    env:
+      OWNER: peter-bread
+      REPO: homebrew-tap
+
     steps:
 
       - uses: actions/create-github-app-token@v2
@@ -16,11 +21,10 @@ jobs:
           private-key: ${{ secrets.HOMEBREW_DISPATCH_APP_KEY }}
           owner: ${{ github.repository_owner }}
           repositories: |
-            homebrew-tap
+            ${{ env.REPO }}
 
       - uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ steps.app-token.outputs.token }}
-          repository: peter-bread/homebrew-tap
+          repository: ${{ env.OWNER }}/${{ env.REPO }}
           event-type: my-event
-
