@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/peter-bread/gamon3/compare/v1.0.3...v1.0.4) (2025-09-09)
+
+### Documentation
+
+* **README:** make TODO bold ([480bf9d](https://github.com/peter-bread/gamon3/commit/480bf9d485d0a4b289686871d5c889709562e59b))
+* **README:** remove italics from TODO ([e6280e0](https://github.com/peter-bread/gamon3/commit/e6280e03f6acb4154616b0ae6f6900cf1e3ea251))
+
 ## [1.0.3](https://github.com/peter-bread/gamon3/compare/v1.0.2...v1.0.3) (2025-09-09)
 
 ### Documentation
