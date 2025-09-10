@@ -29,6 +29,11 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
 
+      - name: Repo name
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: echo "$REPO_NAME"
+
       - name: Get latest release info
         id: release-info
         run: |
