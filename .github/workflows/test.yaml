@@ -10,7 +10,7 @@ jobs:
 
     env:
       SOFTWARE_OWNER: peter-bread
-      SOFTWARE_REPO: gamon3
+      SOFTWARE_REPO: gamon
       TAP_OWNER: peter-bread
       TAP_REPO: homebrew-tap
 
