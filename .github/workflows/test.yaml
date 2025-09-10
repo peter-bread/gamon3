@@ -54,7 +54,7 @@ jobs:
                   "owner": "${{ env.OWNER }}",
                   "repo": "${{ env.REPO }}"
                 },
-                "formula": "${{ env.REPO }}"
+                "formula": "${{ env.REPO }}",
                 "tag": "${{ steps.release-info.outputs.tag }}",
                 "checksum": "${{ steps.release-info.outputs.checksum }}"
               }
