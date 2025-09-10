@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SOFTWARE_OWNER: peter-bread
-      SOFTWARE_REPO: gamon
-      TAP_OWNER: peter-bread
-      TAP_REPO: homebrew-tap
+      OWNER: ${{ github.repository_owner }}
+      REPO: gamon
+      # REPO: ${{ github.event.repository.name }}
+      TAP: homebrew-tap
 
     steps:
 
@@ -21,23 +21,18 @@ jobs:
         with:
           app-id: ${{ vars.HOMEBREW_DISPATCH_APP_ID }}
           private-key: ${{ secrets.HOMEBREW_DISPATCH_APP_KEY }}
-          owner: ${{ github.repository_owner }}
-          repositories: ${{ env.TAP_REPO }}
+          owner: ${{ env.OWNER }}
+          repositories: ${{ env.TAP }}
 
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
-      - name: Repo name
-        env:
-          REPO_NAME: ${{ github.event.repository.name }}
-        run: echo "$REPO_NAME"
+      # - name: Dump GitHub context
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
+      #   run: echo "$GITHUB_CONTEXT"
 
       - name: Get latest release info
         id: release-info
         run: |
-          LATEST=$(curl -s "https://api.github.com/repos/$SOFTWARE_OWNER/$SOFTWARE_REPO/releases/latest")
+          LATEST=$(curl -s "https://api.github.com/repos/$OWNER/$REPO/releases/latest")
           TAG=$(echo "$LATEST" | jq -r '.tag_name')
           URL=$(echo "$LATEST" | jq -r '.tarball_url')
 
@@ -50,11 +45,16 @@ jobs:
       - uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ steps.app-token.outputs.token }}
-          repository: ${{ env.TAP_OWNER }}/${{ env.TAP_REPO }}
+          repository: ${{ env.OWNER }}/${{ env.TAP }}
           event-type: my-event
           client-payload: |-
             {
               "release": {
+                "software": {
+                  "owner": "${{ env.OWNER }}",
+                  "repo": "${{ env.REPO }}"
+                },
+                "formula": "${{ env.REPO }}"
                 "tag": "${{ steps.release-info.outputs.tag }}",
                 "checksum": "${{ steps.release-info.outputs.checksum }}"
               }
