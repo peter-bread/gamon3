@@ -24,6 +24,11 @@ jobs:
           owner: ${{ github.repository_owner }}
           repositories: ${{ env.TAP_REPO }}
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Get latest release info
         id: release-info
         run: |
