@@ -10,8 +10,7 @@ jobs:
 
     env:
       OWNER: ${{ github.repository_owner }}
-      REPO: gamon
-      # REPO: ${{ github.event.repository.name }}
+      REPO: ${{ github.event.repository.name }}
       TAP: homebrew-tap
 
     steps:
@@ -29,18 +28,18 @@ jobs:
       #     GITHUB_CONTEXT: ${{ toJson(github) }}
       #   run: echo "$GITHUB_CONTEXT"
 
-      - name: Get latest release info
-        id: release-info
-        run: |
-          LATEST=$(curl -s "https://api.github.com/repos/$OWNER/$REPO/releases/latest")
-          TAG=$(echo "$LATEST" | jq -r '.tag_name')
-          URL=$(echo "$LATEST" | jq -r '.tarball_url')
-
-          wget -O /tmp/gamon.tar.gz "$URL"
-          CHECKSUM=$(sha256sum /tmp/gamon.tar.gz | cut -d ' ' -f1)
-
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "checksum=$CHECKSUM" >> "$GITHUB_OUTPUT"
+      # - name: Get latest release info
+      #   id: release-info
+      #   run: |
+      #     LATEST=$(curl -s "https://api.github.com/repos/$OWNER/$REPO/releases/latest")
+      #     TAG=$(echo "$LATEST" | jq -r '.tag_name')
+      #     URL=$(echo "$LATEST" | jq -r '.tarball_url')
+      #
+      #     wget -O /tmp/gamon.tar.gz "$URL"
+      #     CHECKSUM=$(sha256sum /tmp/gamon.tar.gz | cut -d ' ' -f1)
+      #
+      #     echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      #     echo "checksum=$CHECKSUM" >> "$GITHUB_OUTPUT"
 
       - uses: peter-evans/repository-dispatch@v3
         with:
@@ -49,13 +48,5 @@ jobs:
           event-type: my-event
           client-payload: |-
             {
-              "release": {
-                "software": {
-                  "owner": "${{ env.OWNER }}",
-                  "repo": "${{ env.REPO }}"
-                },
-                "formula": "${{ env.REPO }}",
-                "tag": "${{ steps.release-info.outputs.tag }}",
-                "checksum": "${{ steps.release-info.outputs.checksum }}"
-              }
+              "formula": "${{ env.REPO }}"
             }
