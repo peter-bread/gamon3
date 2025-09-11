@@ -23,29 +23,11 @@ jobs:
           owner: ${{ env.OWNER }}
           repositories: ${{ env.TAP }}
 
-      # - name: Dump GitHub context
-      #   env:
-      #     GITHUB_CONTEXT: ${{ toJson(github) }}
-      #   run: echo "$GITHUB_CONTEXT"
-
-      # - name: Get latest release info
-      #   id: release-info
-      #   run: |
-      #     LATEST=$(curl -s "https://api.github.com/repos/$OWNER/$REPO/releases/latest")
-      #     TAG=$(echo "$LATEST" | jq -r '.tag_name')
-      #     URL=$(echo "$LATEST" | jq -r '.tarball_url')
-      #
-      #     wget -O /tmp/gamon.tar.gz "$URL"
-      #     CHECKSUM=$(sha256sum /tmp/gamon.tar.gz | cut -d ' ' -f1)
-      #
-      #     echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-      #     echo "checksum=$CHECKSUM" >> "$GITHUB_OUTPUT"
-
       - uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ steps.app-token.outputs.token }}
           repository: ${{ env.OWNER }}/${{ env.TAP }}
-          event-type: my-event
+          event-type: bump
           client-payload: |-
             {
               "formula": "${{ env.REPO }}"
