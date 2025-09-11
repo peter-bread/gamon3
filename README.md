@@ -11,6 +11,10 @@ Automatically switch GitHub CLI account on `cd`.
 
 **TODO:** Add installation instructions.
 
+### Homebrew
+
+**TODO:** Add installation instructions for Homebrew.
+
 ### Go Install
 
 ```bash
