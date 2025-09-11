@@ -11,7 +11,7 @@ jobs:
     env:
       OWNER: ${{ github.repository_owner }}
       REPO: ${{ github.event.repository.name }}
-      TAP: homebrew-tap
+      TAP: ${{ vars.HOMEBREW_TAP }}
 
     steps:
 
