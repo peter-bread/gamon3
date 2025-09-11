@@ -1,3 +1,9 @@
+## [1.0.8](https://github.com/peter-bread/gamon3/compare/v1.0.7...v1.0.8) (2025-09-11)
+
+### Documentation
+
+* **README:** remove TODO ([aa54266](https://github.com/peter-bread/gamon3/commit/aa5426663b052ada8236931dd675311eba0b7ec0))
+
 ## [1.0.7](https://github.com/peter-bread/gamon3/compare/v1.0.6...v1.0.7) (2025-09-11)
 
 ### Documentation
