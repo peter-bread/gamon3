@@ -1,3 +1,9 @@
+## [1.0.7](https://github.com/peter-bread/gamon3/compare/v1.0.6...v1.0.7) (2025-09-11)
+
+### Documentation
+
+* **README:** adds homebrew installation docs ([7c22741](https://github.com/peter-bread/gamon3/commit/7c2274106479952d1e5b8a83d2771d0e181f2299))
+
 ## [1.0.6](https://github.com/peter-bread/gamon3/compare/v1.0.5...v1.0.6) (2025-09-11)
 
 ### Documentation
