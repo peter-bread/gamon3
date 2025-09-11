@@ -13,8 +13,6 @@ Automatically switch GitHub CLI account on `cd`.
 
 ### Homebrew
 
-**TODO:** Add installation instructions for Homebrew.
-
 ```bash
 brew install peter-bread/tap/gamon3
 ```
