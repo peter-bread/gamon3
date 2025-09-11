@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/peter-bread/gamon3/compare/v1.0.5...v1.0.6) (2025-09-11)
+
+### Documentation
+
+* **README:** adds installation instructions for `go install` ([a4f07e6](https://github.com/peter-bread/gamon3/commit/a4f07e6594443b51f31c0f1f6e858eae4b29c0a6))
+* **README:** start homebrew installation docs ([e3723ba](https://github.com/peter-bread/gamon3/commit/e3723baacb3edb15f4d53488d76958d09e51c228))
+
 ## [1.0.5](https://github.com/peter-bread/gamon3/compare/v1.0.4...v1.0.5) (2025-09-09)
 
 ### Bug Fixes
