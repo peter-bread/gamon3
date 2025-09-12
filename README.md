@@ -23,6 +23,15 @@ wget -qO- https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/s
 curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash -s -- --version latest --ext tar.gz --prefix /usr/local
 ```
 
+Options:
+
+| Option           | Description        | Default      | Allowed Value          |
+| ---------------- | ------------------ | ------------ | ---------------------- |
+| `--version`      | Version to install | `latest`     | `latest` or `[v]X.Y.Z` |
+| `--ext`          | Archive extension  | `tar.gz`     | `tar.gz` or `zip`      |
+| `--prefix`       | Install location   | `/usr/local` | Any filepath           |
+| `-h` \| `--help` | Prints help        | N/A          | N/A                    |
+
 ### Homebrew
 
 ```bash
