@@ -148,3 +148,7 @@ account: some-account
 Gamon3 will check to see if the `GAMON3_ACCOUNT` environment variable has been
 set to a valid GitHub account. If it has, this will override both `.gamon.yaml`
 and `config.yaml`.
+
+## See Also
+
+- [Homebrew Tap](https://github.com/peter-bread/homebrew-tap)
