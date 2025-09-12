@@ -96,11 +96,6 @@ aarch64 | arm64) ARCH="arm64" ;;
   ;;
 esac
 
-info "GITHUB_REPO: $GITHUB_REPO"
-info "BINARY_NAME: $BINARY_NAME"
-info "OS: $OS"
-info "ARCH: $ARCH"
-
 INSTALL_PREFIX="/usr/local"
 RELEASE_VERSION="latest"
 ARCHIVE_EXT="tar.gz"
@@ -141,6 +136,11 @@ while [[ $# -gt 0 ]]; do
     ;;
   esac
 done
+
+info "GITHUB_REPO: $GITHUB_REPO"
+info "BINARY_NAME: $BINARY_NAME"
+info "OS: $OS"
+info "ARCH: $ARCH"
 
 info "INSTALL_PREFIX: $INSTALL_PREFIX"
 info "RELEASE_VERSION: $RELEASE_VERSION"
