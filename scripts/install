@@ -1,0 +1,230 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+################################################################################
+# LOGGING FUNCTIONS
+################################################################################
+
+# Reference (exact version):
+# 'https://github.com/peter-bread/coding-utils/blob/cbd7c105e34eae2fac10e53fe0a398be8a6a0138/bash/logging.sh'.
+
+LOG_USE_COLORS=1   # 1 = colored output, 0 = plain
+LOG_ENABLE_DEBUG=0 # 1 = show debug messages, 0 = hide
+LOG_DATE_FORMAT="%Y-%m-%d %H:%M:%S"
+
+LOG_RESET="\e[0m"
+
+LOG_RED="\e[31m"
+LOG_YELLOW="\e[33m"
+LOG_BLUE="\e[34m"
+LOG_CYAN="\e[36m"
+
+# Internal logging function.
+_log() {
+  local level="$1"
+  local msg="$2"
+  local color="$3"
+  local timestamp
+  timestamp=$(date +"$LOG_DATE_FORMAT")
+
+  if [[ $LOG_USE_COLORS -eq 1 && -n "$color" ]]; then
+    printf "%s ${color}[%-5s]${LOG_RESET} %s\n" "$timestamp" "$level" "$msg"
+  else
+    printf "%s [%-5s] %s\n" "$timestamp" "$level" "$msg"
+  fi
+}
+
+# Public functions.
+info() { _log "INFO" "$1" "$LOG_BLUE"; }
+warn() { _log "WARN" "$1" "$LOG_YELLOW"; }
+error() { _log "ERROR" "$1" "$LOG_RED"; }
+debug() { [[ $LOG_ENABLE_DEBUG -eq 1 ]] && _log "DEBUG" "$1" "$LOG_CYAN"; }
+
+################################################################################
+# END OF LOGGING FUNCTIONS
+################################################################################
+
+#
+
+################################################################################
+# UTILITY FUNCTIONS
+################################################################################
+
+expand_path() {
+  case "$1" in
+  ~*) echo "${1/#\~/$HOME}" ;;
+  *) echo "$1" ;;
+  esac
+}
+
+download() {
+  local url="$1"
+  local output="$2"
+
+  if command -v curl >/dev/null 2>&1; then
+    curl -L -o "$output" "$url"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -O "$output" "$url"
+  else
+    error "Neither curl nor wget is installed." >&2
+    exit 1
+  fi
+}
+
+################################################################################
+# END OF UTILITY FUNCTIONS
+################################################################################
+
+#
+
+################################################################################
+# MAIN
+################################################################################
+
+GITHUB_REPO="peter-bread/gamon3"
+BINARY_NAME="gamon3"
+OS=$(uname | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+case "$ARCH" in
+x86_64) ARCH="amd64" ;;
+aarch64 | arm64) ARCH="arm64" ;;
+*)
+  error "Unsupported architecture: $ARCH"
+  exit 1
+  ;;
+esac
+
+info "GITHUB_REPO: $GITHUB_REPO"
+info "BINARY_NAME: $BINARY_NAME"
+info "OS: $OS"
+info "ARCH: $ARCH"
+
+INSTALL_PREFIX="/usr/local"
+RELEASE_VERSION="latest"
+ARCHIVE_EXT="tar.gz"
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+  --prefix=*)
+    INSTALL_PREFIX="${1#*=}"
+    shift
+    ;;
+  --prefix)
+    INSTALL_PREFIX="$2"
+    shift 2
+    ;;
+  --version=*)
+    RELEASE_VERSION="${1#*=}"
+    shift
+    ;;
+  --version)
+    RELEASE_VERSION="$2"
+    shift 2
+    ;;
+  --ext=*)
+    ARCHIVE_EXT="${1#*=}"
+    shift
+    ;;
+  --ext)
+    ARCHIVE_EXT="$2"
+    shift 2
+    ;;
+  -h | --help)
+    echo "Usage: $0 [--version <X.Y.Z>] [--ext <tar.gz|zip>] [--prefix <path>]"
+    exit 0
+    ;;
+  *)
+    error "Unknown option: $1"
+    exit 1
+    ;;
+  esac
+done
+
+info "INSTALL_PREFIX: $INSTALL_PREFIX"
+info "RELEASE_VERSION: $RELEASE_VERSION"
+info "ARCHIVE_EXT: $ARCHIVE_EXT"
+
+info "Expanding INSTALL_PREFIX if required"
+INSTALL_PREFIX=$(expand_path "$INSTALL_PREFIX")
+info "INSTALL_PREFIX: $INSTALL_PREFIX"
+
+ARCHIVE_NAME="${BINARY_NAME}_${OS}_$ARCH"
+
+info "Prepending v to $RELEASE_VERSION if not already done"
+if [[ "$RELEASE_VERSION" != v* && "$RELEASE_VERSION" != "latest" ]]; then
+  RELEASE_VERSION="v$RELEASE_VERSION"
+fi
+info "RELEASE_VERSION: $RELEASE_VERSION"
+
+info "Getting download URL"
+if [ "$RELEASE_VERSION" = "latest" ]; then
+  URL="https://github.com/$GITHUB_REPO/releases/latest/download/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
+else
+  URL="https://github.com/$GITHUB_REPO/releases/download/$RELEASE_VERSION/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
+fi
+info "URL: $URL"
+
+info "Creating temporary directory"
+TMP_DIR=$(mktemp -d)
+
+cleanup() {
+  info "Cleaning up"
+  rm -rf "$TMP_DIR"
+}
+
+trap cleanup EXIT
+
+ARCHIVE_PATH="$TMP_DIR/$ARCHIVE_NAME.$ARCHIVE_EXT"
+
+info "Downloading $URL"
+download "$URL" "$ARCHIVE_PATH"
+
+case "$ARCHIVE_EXT" in
+tar.gz) tar xvf "$ARCHIVE_PATH" -C "$TMP_DIR" ;;
+zip) unzip -q "$ARCHIVE_PATH" -d "$TMP_DIR" ;;
+*)
+  error "Unsupported archive type: $ARCHIVE_EXT"
+  exit 1
+  ;;
+esac
+
+INSTALL_DIR="$INSTALL_PREFIX/bin"
+info "INSTALL_DIR: $INSTALL_DIR"
+
+BINARY_PATH="$TMP_DIR/$ARCHIVE_NAME/$BINARY_NAME"
+info "BINARY_PATH: $BINARY_PATH"
+
+info "Creating $INSTALL_DIR if it does not already exist"
+warn "This may require sudo privileges"
+
+if [ -d "$INSTALL_DIR" ]; then
+  info "$INSTALL_DIR already exists"
+elif [ -w "$(dirname "$INSTALL_DIR")" ]; then
+  info "Creating $INSTALL_DIR"
+  mkdir -p "$INSTALL_DIR"
+else
+  warn "Creating $INSTALL_DIR with sudo"
+  sudo mkdir -p "$INSTALL_DIR"
+fi
+
+info "Making $BINARY_PATH executable"
+chmod +x "$BINARY_PATH"
+
+info "Moving $BINARY_PATH to $INSTALL_DIR"
+warn "This may require sudo privileges"
+
+if [ -w "$INSTALL_DIR" ]; then
+  info "Sudo is not required"
+  mv "$BINARY_PATH" "$INSTALL_DIR"
+else
+  warn "Sudo is required"
+  sudo mv "$BINARY_PATH" "$INSTALL_DIR"
+fi
+
+info "$BINARY_NAME installed successfully!"
+
+################################################################################
+# END OF MAIN
+################################################################################
