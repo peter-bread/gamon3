@@ -10,6 +10,13 @@ Automatically switch GitHub CLI account on `cd`.
 
 ## Install
 
+### Pre-built Binaries
+
+Pre-built binaries can be found under [GitHub Releases](https://github.com/peter-bread/gamon3/releases/latest).
+
+These can be downloaded and extracted manually or you can use the provided
+[installation script](./scripts/install).
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash
 ```
@@ -18,7 +25,9 @@ curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/
 wget -qO- https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash
 ```
 
-**TODO** To provide arguments:
+#### Customise Installation
+
+The installation script can be configured with some optional flags.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash -s -- --version latest --ext tar.gz --prefix /usr/local
