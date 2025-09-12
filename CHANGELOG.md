@@ -1,3 +1,9 @@
+## [1.0.9](https://github.com/peter-bread/gamon3/compare/v1.0.8...v1.0.9) (2025-09-12)
+
+### Documentation
+
+* **README:** adds link to homebrew tap ([9b4bdf7](https://github.com/peter-bread/gamon3/commit/9b4bdf75b26859d8448bbde8c4c235d192311895))
+
 ## [1.0.8](https://github.com/peter-bread/gamon3/compare/v1.0.7...v1.0.8) (2025-09-11)
 
 ### Documentation
