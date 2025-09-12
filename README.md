@@ -4,6 +4,7 @@ Automatically switch GitHub CLI account on `cd`.
 
 ## Requirements
 
+- Linux or MacOS
 - Go 1.25+
 - [`gh`](https://cli.github.com/) v2.40.0+
 
