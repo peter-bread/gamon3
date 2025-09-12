@@ -9,7 +9,19 @@ Automatically switch GitHub CLI account on `cd`.
 
 ## Install
 
-**TODO:** Add installation instructions.
+```bash
+curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash
+```
+
+```bash
+wget -qO- https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash
+```
+
+**TODO** To provide arguments:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash -s -- --version latest --ext tar.gz --prefix /usr/local
+```
 
 ### Homebrew
 
