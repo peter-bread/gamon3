@@ -1,3 +1,16 @@
+## [1.0.10](https://github.com/peter-bread/gamon3/compare/v1.0.9...v1.0.10) (2025-09-13)
+
+### Bug Fixes
+
+* **config:** don't error if `accounts` field is empty ([2431839](https://github.com/peter-bread/gamon3/commit/2431839794df6fa9eb0d0fc933eb96dcb46633ed))
+
+### Documentation
+
+* **README:** adds documentation for install script options ([28d486a](https://github.com/peter-bread/gamon3/commit/28d486a8a2789ff115e6da855eb73a63ac621655))
+* **README:** adds installation docs for install script ([e6382fe](https://github.com/peter-bread/gamon3/commit/e6382feb3fbc95935e5ed8985e75718a3f0a83db))
+* **README:** adds links to install script ([b391355](https://github.com/peter-bread/gamon3/commit/b391355d78fce105610f821f699457f6461958da))
+* **README:** adds OS requirements ([d12afe6](https://github.com/peter-bread/gamon3/commit/d12afe677b5c84b1b7a47b848689891ac7bb4b67))
+
 ## [1.0.9](https://github.com/peter-bread/gamon3/compare/v1.0.8...v1.0.9) (2025-09-12)
 
 ### Documentation
