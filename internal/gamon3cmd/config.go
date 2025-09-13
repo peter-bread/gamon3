@@ -78,16 +78,14 @@ func (c *Config) ValidateUsers(allowedUsers []string) error {
 		errs = append(errs, "config: '"+c.Default+"' has not been registered with GH CLI")
 	}
 
-	if len(c.Accounts) == 0 {
-		errs = append(errs, "config: 'accounts' section is either empty or missing")
-	}
-
-	for account := range c.Accounts {
-		if account == "" {
-			errs = append(errs, "config: account names must be non-empty")
-		}
-		if !slices.Contains(allowedUsers, account) {
-			errs = append(errs, "config: '"+account+"' has not been registered with GH CLI")
+	if len(c.Accounts) > 0 {
+		for account := range c.Accounts {
+			if account == "" {
+				errs = append(errs, "config: account names must be non-empty")
+			}
+			if !slices.Contains(allowedUsers, account) {
+				errs = append(errs, "config: '"+account+"' has not been registered with GH CLI")
+			}
 		}
 	}
 
@@ -121,7 +119,7 @@ func GetConfigPath() (string, error) {
 		return "", err
 	}
 
-	if err := os.MkdirAll(configDir, 0755); err != nil {
+	if err := os.MkdirAll(configDir, 0o755); err != nil {
 		return "", err
 	}
 
