@@ -58,8 +58,8 @@ jobs:
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
-          app-id: ${{ vars.HOMEBREW_DISPATCH_APP_ID }}
-          private-key: ${{ secrets.HOMEBREW_DISPATCH_APP_KEY }}
+          app-id: ${{ vars.CELLARMAN_APP_ID }}
+          private-key: ${{ secrets.CELLARMAN_APP_PRIVATE_KEY }}
           owner: ${{ env.OWNER }}
           repositories: ${{ env.TAP }}
 
