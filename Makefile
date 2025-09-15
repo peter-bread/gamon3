@@ -1,12 +1,19 @@
-.PHONY: all build clean
+.PHONY: build clean goreleaser install
 
-OUTPUT_DIR = dist
-
-all: clean build
+BUILD_DIR = build
+LDFLAGS   =
 
 build:
-	goreleaser release --snapshot --clean
+	mkdir -p $(BUILD_DIR)
+	go build -o $(BUILD_DIR) -v -ldflags "$(LDFLAGS)"
 	
 clean:
 	go clean
-	rm -rf $(OUTPUT_DIR)
+	rm -rf $(BUILD_DIR)
+
+# This will use '.goreleaser.yaml' and build in 'dist/'.
+goreleaser:
+	goreleaser release --snapshot --clean
+
+install:
+	echo "TODO: Implement 'make install'."
