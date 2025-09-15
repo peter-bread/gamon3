@@ -14,33 +14,45 @@ Automatically switch GitHub CLI account on `cd`.
 
 Pre-built binaries can be found under [GitHub Releases](https://github.com/peter-bread/gamon3/releases/latest).
 
-These can be downloaded and extracted manually or you can use the provided
-[installation script](./scripts/install).
+These can be downloaded and extracted manually.
+
+Alternatively you can use the provided [installation script](./scripts/install). The
+commands below download the script and pipe it into Bash.
+
+> [!IMPORTANT]
+>
+> Always read through scripts before running them to make sure they aren't malicious.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash
+curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install |
+  bash
 ```
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash
+wget -qO- https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install |
+  bash
 ```
 
 #### Customise Installation
 
 The installation script can be configured with some optional flags.
 
+The command below downloads the script and pipes it into Bash, providing all
+options with their default values.
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install | bash -s -- --version latest --ext tar.gz --prefix /usr/local
+curl -fsSL https://raw.githubusercontent.com/peter-bread/gamon3/refs/heads/main/scripts/install |
+  bash -s -- --version latest --ext tar.gz --prefix /usr/local
 ```
 
 Options:
 
-| Option           | Description        | Default      | Allowed Value          |
-| ---------------- | ------------------ | ------------ | ---------------------- |
-| `--version`      | Version to install | `latest`     | `latest` or `[v]X.Y.Z` |
-| `--ext`          | Archive extension  | `tar.gz`     | `tar.gz` or `zip`      |
-| `--prefix`       | Install location   | `/usr/local` | Any filepath           |
-| `-h` \| `--help` | Prints help        | N/A          | N/A                    |
+| Option       | Description        | Default      | Allowed Value          |
+| ------------ | ------------------ | ------------ | ---------------------- |
+| `--version`  | Version to install | `latest`     | `latest` or `[v]X.Y.Z` |
+| `--ext`      | Archive extension  | `tar.gz`     | `tar.gz` or `zip`      |
+| `--prefix`   | Install location   | `/usr/local` | Any filepath           |
+| `-h, --help` | Prints help        | N/A          | N/A                    |
 
 ### Homebrew
 
@@ -64,6 +76,16 @@ cp ./gamon3 ~/.local/bin
 ```
 
 Assuming `~/.local/bin` is in `PATH`.
+
+> [!NOTE]
+> In a future release (see [this issue](https://github.com/peter-bread/gamon3/issues/20)), you will be able to use this:
+>
+> ```bash
+> git clone https://github.com/peter-bread/gamon3
+> cd gamon3
+> make
+> make install
+> ```
 
 ## Usage
 
