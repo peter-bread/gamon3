@@ -63,11 +63,24 @@ download() {
   local output="$2"
 
   if command -v curl >/dev/null 2>&1; then
-    curl -L -o "$output" "$url"
+    curl -sSL -o "$output" "$url"
   elif command -v wget >/dev/null 2>&1; then
-    wget -O "$output" "$url"
+    wget -q -O "$output" "$url"
   else
     error "Neither curl nor wget is installed." >&2
+    exit 1
+  fi
+}
+
+checksum() {
+  local args=(-c -)
+
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "${args[@]}"
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "${args[@]}"
+  else
+    error "Neither sha256sum nor shasum is installed." >&2
     exit 1
   fi
 }
@@ -159,13 +172,18 @@ if [[ "$RELEASE_VERSION" != v* && "$RELEASE_VERSION" != "latest" ]]; then
 fi
 info "RELEASE_VERSION: $RELEASE_VERSION"
 
+CHECKSUMS_NAME="checksums.txt"
+
 info "Getting download URL"
 if [ "$RELEASE_VERSION" = "latest" ]; then
-  URL="https://github.com/$GITHUB_REPO/releases/latest/download/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
+  ARCHIVE_URL="https://github.com/$GITHUB_REPO/releases/latest/download/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
+  CHECKSUM_URL="https://github.com/$GITHUB_REPO/releases/latest/download/${BINARY_NAME}_${RELEASE_VERSION#v}_$CHECKSUMS_NAME"
 else
-  URL="https://github.com/$GITHUB_REPO/releases/download/$RELEASE_VERSION/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
+  ARCHIVE_URL="https://github.com/$GITHUB_REPO/releases/download/$RELEASE_VERSION/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
+  CHECKSUM_URL="https://github.com/$GITHUB_REPO/releases/download/$RELEASE_VERSION/${BINARY_NAME}_${RELEASE_VERSION#v}_$CHECKSUMS_NAME"
 fi
-info "URL: $URL"
+info "ARCHIVE_URL: $ARCHIVE_URL"
+info "CHECKSUM_URL: $CHECKSUM_URL"
 
 info "Creating temporary directory"
 TMP_DIR=$(mktemp -d)
@@ -178,18 +196,37 @@ cleanup() {
 trap cleanup EXIT
 
 ARCHIVE_PATH="$TMP_DIR/$ARCHIVE_NAME.$ARCHIVE_EXT"
+CHECKSUM_PATH=$TMP_DIR/$CHECKSUMS_NAME
 
-info "Downloading $URL"
-download "$URL" "$ARCHIVE_PATH"
+info "Downloading $CHECKSUM_URL"
+download "$CHECKSUM_URL" "$CHECKSUM_PATH"
+
+info "Downloading $ARCHIVE_URL"
+download "$ARCHIVE_URL" "$ARCHIVE_PATH"
+
+info "Verifying checksums"
+
+cd "$TMP_DIR" # Makes checksums easier.
+
+if ! grep "$ARCHIVE_NAME.$ARCHIVE_EXT" "$CHECKSUM_PATH" | checksum; then
+  error "Checksums could not be verified"
+  exit 1
+fi
+
+info "Checksums verified"
+
+info "Attempting to extract archive"
 
 case "$ARCHIVE_EXT" in
-tar.gz) tar xvf "$ARCHIVE_PATH" -C "$TMP_DIR" ;;
+tar.gz) tar xf "$ARCHIVE_PATH" -C "$TMP_DIR" ;;
 zip) unzip -q "$ARCHIVE_PATH" -d "$TMP_DIR" ;;
 *)
   error "Unsupported archive type: $ARCHIVE_EXT"
   exit 1
   ;;
 esac
+
+info "Archive extracted successfully"
 
 INSTALL_DIR="$INSTALL_PREFIX/bin"
 info "INSTALL_DIR: $INSTALL_DIR"
