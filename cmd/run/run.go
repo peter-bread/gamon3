@@ -29,7 +29,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"slices"
 
 	"github.com/peter-bread/gamon3/internal/gamon3cmd"
 
@@ -52,75 +51,16 @@ There are three methods used to determine which account should be used:
 3. Main user config file 'config.yaml'
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		var ghHosts gamon3cmd.GHHosts
-
-		ghHostsPath, err := gamon3cmd.GetGHHostsPath()
-		if err != nil {
-			fmt.Println("[GAMON3 ERROR] Failed to get path for GH CLI 'hosts.yml'")
-			os.Exit(1)
-		}
-
-		if err := ghHosts.Load(ghHostsPath); err != nil {
-			fmt.Println("[GAMON3 ERROR] Failed to load GH CLI 'hosts.yml'")
-			os.Exit(1)
-		}
-
-		currentAccount := ghHosts.GetCurrentUser()
-		users := ghHosts.GetAllUsers()
-
-		// Check $GAMON3_ACCOUNT.
-		// IMPORTANT: $GAMON3_ACCOUNT *must* be exported.
-
-		if account, found := os.LookupEnv("GAMON3_ACCOUNT"); found {
-			if slices.Contains(users, account) {
-				switchIfNeeded(account, currentAccount)
-				return
-			} else {
-				fmt.Printf("[GAMON3 WARN] '%s' is not a valid account\n", account)
-				fmt.Println("[GAMON3 INFO] Falling back to local config file")
-			}
-		}
-
-		// Walk up filetree looking for a local '.gamon3.yaml' file.
-		// It should also stop walking at the $HOME directory, at which point it
-		// falls back to 'config.yaml'.
-
-		var localConfig gamon3cmd.LocalConfig
-
-		if localConfigPath, err := gamon3cmd.GetLocalConfigPath(); err == nil {
-			if err := localConfig.Load(localConfigPath, users); err != nil {
-				fmt.Printf("[GAMON3 WARN] '%s' is not a valid local config file\n", localConfigPath)
-				fmt.Println(err)
-				fmt.Println("[GAMON3 INFO] Falling back to main config file")
-			} else {
-				switchIfNeeded(localConfig.Account, currentAccount)
-				return
-			}
-		}
-
-		// Check main 'config.yaml' file.
-
-		var config gamon3cmd.Config
-
-		configPath, err := gamon3cmd.GetConfigPath()
+		currentAccount, account, _, err := gamon3cmd.Resolve()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		if err := config.Load(configPath, users); err != nil {
-			fmt.Printf("[GAMON3 ERROR] '%s' is not a valid local config file\n", configPath)
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		pwd := os.Getenv("PWD")
-		account := config.GetAccount(pwd)
 		switchIfNeeded(account, currentAccount)
 	},
 }
 
-// TODO: Move to internal?
 func switchIfNeeded(account, currentAccount string) {
 	if account != currentAccount {
 		// TODO: Handle error.
