@@ -20,45 +20,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// Package cmd defines root command and is the entry point for this tool.
-package cmd
+// Package source defines the `source` command.
+package source
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/peter-bread/gamon3/cmd/hook"
-	"github.com/peter-bread/gamon3/cmd/run"
-	"github.com/peter-bread/gamon3/cmd/source"
+	"github.com/peter-bread/gamon3/internal/gamon3cmd"
+
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "gamon3",
-	Short: "Automatic GH CLI account switching on cd",
-	Long: `Automatic GH CLI account switching on cd.
+// SourceCmd represents the run command.
+var SourceCmd = &cobra.Command{
+	Use:   "source",
+	Short: "Prints source of current acount",
+	Long: `Prints source of current acount.
 
-Gamon3 is a tool that enables automatic GH CLI account switching based on a
-context, specifically 'pwd'. It does this by hooking into the 'cd' command.
+Prints which GH CLI account should be active and which method was used
+to resolve this.
+
+There are three methods used to determine which account should be used:
+1. $GAMON3_ACCOUNT environment variable
+2. Checking '.gamon.yaml' or '.gamon.yml' local config file
+3. Main user config file 'config.yaml'
 `,
-}
+	Run: func(cmd *cobra.Command, args []string) {
+		_, _, source, err := gamon3cmd.Resolve()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
-	}
-}
-
-func SetVersion(version, commit, date string) {
-	// TODO: Use `commit` and `date` in version output (MAYBE).
-	rootCmd.Version = version
-}
-
-func init() {
-	rootCmd.AddCommand(run.RunCmd)
-	rootCmd.AddCommand(hook.HookCmd)
-	rootCmd.AddCommand(source.SourceCmd)
+		fmt.Println(source)
+	},
 }

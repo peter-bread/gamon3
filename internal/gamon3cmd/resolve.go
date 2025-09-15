@@ -26,9 +26,11 @@ func Resolve() (currentAccount string, account string, source string, err error)
 	// Check $GAMON3_ACCOUNT.
 	// IMPORTANT: $GAMON3_ACCOUNT *must* be exported.
 
-	if account, found := os.LookupEnv("GAMON3_ACCOUNT"); found {
+	gamon3EnvVar := "GAMON3_ACCOUNT"
+
+	if account, found := os.LookupEnv(gamon3EnvVar); found {
 		if slices.Contains(users, account) {
-			return currentAccount, account, "environment variable", nil
+			return currentAccount, account, output("Environment variable", gamon3EnvVar, account), nil
 		} else {
 			fmt.Printf("[GAMON3 WARN] '%s' is not a valid account\n", account)
 			fmt.Println("[GAMON3 INFO] Falling back to local config file")
@@ -46,7 +48,8 @@ func Resolve() (currentAccount string, account string, source string, err error)
 			fmt.Printf("[GAMON3 WARN] '%s' is not a valid local config file\n", localConfigPath)
 			fmt.Println("[GAMON3 INFO] Falling back to main config file")
 		} else {
-			return currentAccount, localConfig.Account, "local config", nil
+			account = localConfig.Account
+			return currentAccount, account, output("Local config file", localConfigPath, account), nil
 		}
 	}
 
@@ -66,5 +69,9 @@ func Resolve() (currentAccount string, account string, source string, err error)
 
 	pwd := os.Getenv("PWD")
 	account = config.GetAccount(pwd)
-	return currentAccount, account, "main config", nil
+	return currentAccount, account, output("Config file", configPath, account), nil
+}
+
+func output(kind, value, account string) string {
+	return fmt.Sprintf("%s: %s\nAccount: %s", kind, value, account)
 }
