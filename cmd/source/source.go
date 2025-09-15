@@ -20,30 +20,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// Package run defines the `run` command.
-//
-// This command will switch to the requested GitHub account if required.
-package run
+// Package source defines the `source` command.
+package source
 
 import (
 	"fmt"
 	"os"
-	"os/exec"
 
 	"github.com/peter-bread/gamon3/internal/gamon3cmd"
 
 	"github.com/spf13/cobra"
 )
 
-// RunCmd represents the run command.
-var RunCmd = &cobra.Command{
-	Use:   "run",
-	Short: "Switches GH CLI account if necessary",
-	Long: `Switches GH CLI account if necessary.
+// SourceCmd represents the run command.
+var SourceCmd = &cobra.Command{
+	Use:   "source",
+	Short: "Prints source of current acount",
+	Long: `Prints source of current acount.
 
-Determines which GH CLI account should be active and compares
-this to the currently active account. If they differ, it will switch to
-the correct account.
+Prints which GH CLI account should be active and which method was used
+to resolve this.
 
 There are three methods used to determine which account should be used:
 1. $GAMON3_ACCOUNT environment variable
@@ -51,19 +47,12 @@ There are three methods used to determine which account should be used:
 3. Main user config file 'config.yaml'
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		currentAccount, account, _, err := gamon3cmd.Resolve()
+		_, _, source, err := gamon3cmd.Resolve()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		switchIfNeeded(account, currentAccount)
+		fmt.Println(source)
 	},
-}
-
-func switchIfNeeded(account, currentAccount string) {
-	if account != currentAccount {
-		// TODO: Handle error.
-		exec.Command("gh", "auth", "switch", "--user", account).Run()
-	}
 }

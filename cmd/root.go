@@ -28,6 +28,7 @@ import (
 
 	"github.com/peter-bread/gamon3/cmd/hook"
 	"github.com/peter-bread/gamon3/cmd/run"
+	"github.com/peter-bread/gamon3/cmd/source"
 	"github.com/spf13/cobra"
 )
 
@@ -59,4 +60,5 @@ func SetVersion(version, commit, date string) {
 func init() {
 	rootCmd.AddCommand(run.RunCmd)
 	rootCmd.AddCommand(hook.HookCmd)
+	rootCmd.AddCommand(source.SourceCmd)
 }
