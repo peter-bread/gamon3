@@ -156,6 +156,27 @@ info "BINARY_NAME: $BINARY_NAME"
 info "OS: $OS"
 info "ARCH: $ARCH"
 
+RELEASE_VERSION=${RELEASE_VERSION#v}
+
+if [[ $RELEASE_VERSION == "latest" ]]; then
+  :
+elif [[ $RELEASE_VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  :
+else
+  error "Invalid version: $RELEASE_VERSION"
+  error "Version can be either 'latest' (default) or of the form 'X.Y.Z' (or vX.Y.Z) where X, Y and Z are numbers"
+  exit 1
+fi
+
+if [[ $ARCHIVE_EXT =~ ^(tar\.gz|zip)$ ]]; then
+  :
+else
+  error "Invalid archive extension: $ARCHIVE_EXT"
+  error "Extension can either be 'tar.gz' (default) or 'zip'"
+  error "Check GitHub Releases to see which formats are available for different platforms"
+  exit 1
+fi
+
 info "INSTALL_PREFIX: $INSTALL_PREFIX"
 info "RELEASE_VERSION: $RELEASE_VERSION"
 info "ARCHIVE_EXT: $ARCHIVE_EXT"
@@ -166,22 +187,22 @@ info "INSTALL_PREFIX: $INSTALL_PREFIX"
 
 ARCHIVE_NAME="${BINARY_NAME}_${OS}_$ARCH"
 
-info "Prepending v to $RELEASE_VERSION if not already done"
-if [[ "$RELEASE_VERSION" != v* && "$RELEASE_VERSION" != "latest" ]]; then
-  RELEASE_VERSION="v$RELEASE_VERSION"
-fi
-info "RELEASE_VERSION: $RELEASE_VERSION"
-
 CHECKSUMS_NAME="checksums.txt"
 
 info "Getting download URL"
 if [ "$RELEASE_VERSION" = "latest" ]; then
-  ARCHIVE_URL="https://github.com/$GITHUB_REPO/releases/latest/download/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
-  CHECKSUM_URL="https://github.com/$GITHUB_REPO/releases/latest/download/${BINARY_NAME}_${RELEASE_VERSION#v}_$CHECKSUMS_NAME"
-else
-  ARCHIVE_URL="https://github.com/$GITHUB_REPO/releases/download/$RELEASE_VERSION/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
-  CHECKSUM_URL="https://github.com/$GITHUB_REPO/releases/download/$RELEASE_VERSION/${BINARY_NAME}_${RELEASE_VERSION#v}_$CHECKSUMS_NAME"
+  if ! command -v jq >/dev/null 2>&1; then
+    error "Getting checksums for latest release requires jq"
+    exit 1
+  fi
+  RELEASE_VERSION=$(curl -s "https://api.github.com/repos/peter-bread/gamon3/releases/latest" | jq -r '.tag_name')
 fi
+
+RELEASE_VERSION=${RELEASE_VERSION#v}
+
+ARCHIVE_URL="https://github.com/${GITHUB_REPO}/releases/download/v${RELEASE_VERSION}/${ARCHIVE_NAME}.${ARCHIVE_EXT}"
+CHECKSUM_URL="https://github.com/${GITHUB_REPO}/releases/download/v${RELEASE_VERSION}/${BINARY_NAME}_${RELEASE_VERSION}_${CHECKSUMS_NAME}"
+
 info "ARCHIVE_URL: $ARCHIVE_URL"
 info "CHECKSUM_URL: $CHECKSUM_URL"
 
