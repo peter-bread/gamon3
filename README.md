@@ -68,24 +68,20 @@ go install github.com/peter-bread/gamon3@latest
 
 ### Build From Source
 
+To build and install Gamon3 under the default prefix (`/usr/local`), run:
+
 ```bash
 git clone https://github.com/peter-bread/gamon3
 cd gamon3
-go build
-cp ./gamon3 ~/.local/bin
+make
+sudo make install
 ```
 
-Assuming `~/.local/bin` is in `PATH`.
+To install under a custom prefix, e.g. `~/.local`, run:
 
-> [!NOTE]
-> In a future release (see [this issue](https://github.com/peter-bread/gamon3/issues/20)), you will be able to use this:
->
-> ```bash
-> git clone https://github.com/peter-bread/gamon3
-> cd gamon3
-> make
-> make install
-> ```
+```bash
+make install PREFIX=~/.local
+```
 
 ## Usage
 

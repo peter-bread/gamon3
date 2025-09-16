@@ -1,7 +1,9 @@
-.PHONY: build clean goreleaser install
+.PHONY: build clean install goreleaser
 
 BUILD_DIR = build
-LDFLAGS   =
+
+VERSION  	?= $(shell git describe --tags --dirty --always)
+LDFLAGS		?= -X main.version=$(VERSION)
 
 build:
 	mkdir -p $(BUILD_DIR)
@@ -11,9 +13,15 @@ clean:
 	go clean
 	rm -rf $(BUILD_DIR)
 
+
+PREFIX ?= /usr/local
+
+install: build
+	install -d $(PREFIX)/bin
+	install $(BUILD_DIR)/gamon3 $(PREFIX)/bin
+
+################################################################################
+
 # This will use '.goreleaser.yaml' and build in 'dist/'.
 goreleaser:
 	goreleaser release --snapshot --clean
-
-install:
-	echo "TODO: Implement 'make install'."
