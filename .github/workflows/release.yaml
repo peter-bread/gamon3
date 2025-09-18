@@ -6,13 +6,12 @@ on:
 
 jobs:
   release:
+    runs-on: ubuntu-latest
 
     permissions:
       contents: write
       issues: write
       pull-requests: write
-
-    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v5
@@ -46,7 +45,8 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: release
-    if: ${{ needs.release.result == 'success' }}
+
+    if: needs.release.result == 'success'
 
     env:
       OWNER: ${{ github.repository_owner }}
@@ -54,7 +54,6 @@ jobs:
       TAP: ${{ vars.HOMEBREW_TAP }}
 
     steps:
-
       - uses: actions/create-github-app-token@v2
         id: app-token
         with:
