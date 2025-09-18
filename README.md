@@ -116,6 +116,13 @@ Add the following to `~/.config/fish/config.fish`:
 gamon3 hook fish | source
 ```
 
+#### Other Shells
+
+If you use another shell, consult its documentation to see how to hook into the
+`cd` command or 'change `PWD`' event. I probably won't spend any time researching
+more niche shells that I don't personally use, but feel free to open a pull
+request to add support for your favourite shell.
+
 ### Configure Gamon3
 
 As a minimum, create a config file:
