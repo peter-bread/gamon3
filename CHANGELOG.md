@@ -1,3 +1,19 @@
+## [1.1.0](https://github.com/peter-bread/gamon3/compare/v1.0.10...v1.1.0) (2025-09-18)
+
+### Features
+
+* **cmd:** add source cmd ([#19](https://github.com/peter-bread/gamon3/issues/19)) ([b06752e](https://github.com/peter-bread/gamon3/commit/b06752ef1741a9ce5f800f30da0d924bfc2b666f))
+* **source:** adds source command ([939e67b](https://github.com/peter-bread/gamon3/commit/939e67bbd9d35eb4ad3690a87561a4151a3c6d5c)), closes [#17](https://github.com/peter-bread/gamon3/issues/17)
+
+### Documentation
+
+* **README:** adds note about other shells ([861871e](https://github.com/peter-bread/gamon3/commit/861871e83a5b771336fe950bf63ebdefb11c4c49)), closes [#12](https://github.com/peter-bread/gamon3/issues/12)
+* **README:** updates installation script instructions ([7093b43](https://github.com/peter-bread/gamon3/commit/7093b432500e545cc1d05ab2bd03150bece1f824))
+
+### Other
+
+* **run:** split filepath and account resolution from runCmd ([95d3312](https://github.com/peter-bread/gamon3/commit/95d3312f092e7df836f63afa2101969fb583121c))
+
 ## [1.0.10](https://github.com/peter-bread/gamon3/compare/v1.0.9...v1.0.10) (2025-09-13)
 
 ### Bug Fixes
