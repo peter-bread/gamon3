@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/peter-bread/gamon3/compare/v1.1.0...v1.1.1) (2025-09-19)
+
+### Documentation
+
+* **README:** dummy commit for dummy release to fix homebrew tap ([87523b2](https://github.com/peter-bread/gamon3/commit/87523b2dc9c54b9caea558a7a9de4998ec8d71a4))
+
 ## [1.1.0](https://github.com/peter-bread/gamon3/compare/v1.0.10...v1.1.0) (2025-09-18)
 
 ### Features
