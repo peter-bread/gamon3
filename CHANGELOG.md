@@ -1,3 +1,9 @@
+## [1.1.2](https://github.com/peter-bread/gamon3/compare/v1.1.1...v1.1.2) (2025-09-19)
+
+### Documentation
+
+* **README:** another dummy release ([3cee944](https://github.com/peter-bread/gamon3/commit/3cee944477b64fab12b490eefda09a9a5c0d0a71))
+
 ## [1.1.1](https://github.com/peter-bread/gamon3/compare/v1.1.0...v1.1.1) (2025-09-19)
 
 ### Documentation
