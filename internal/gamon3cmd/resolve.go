@@ -63,7 +63,7 @@ func Resolve() (currentAccount string, account string, source string, err error)
 	}
 
 	if err := config.Load(configPath, users); err != nil {
-		errorMsg := fmt.Sprintf("[GAMON3 ERROR] '%s' is not a valid local config file\n", configPath)
+		errorMsg := fmt.Sprintf("[GAMON3 ERROR] '%s' is not a valid config file\n", configPath)
 		return currentAccount, "", "", fmt.Errorf("%s", errorMsg)
 	}
 
