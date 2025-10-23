@@ -1,3 +1,9 @@
+## [1.1.3](https://github.com/peter-bread/gamon3/compare/v1.1.2...v1.1.3) (2025-10-23)
+
+### Bug Fixes
+
+* **resolve:** use correct error message ([a45d998](https://github.com/peter-bread/gamon3/commit/a45d998270935eff1b76cd30bd485fb3b226864a))
+
 ## [1.1.2](https://github.com/peter-bread/gamon3/compare/v1.1.1...v1.1.2) (2025-09-19)
 
 ### Documentation
