@@ -2,6 +2,7 @@ package config_test
 
 import (
 	"reflect"
+	"slices"
 	"sort"
 	"testing"
 
@@ -101,7 +102,7 @@ func TestGhHosts_GetAllUsers(t *testing.T) {
 			}
 			got := g.GetAllUsers()
 			sort.Strings(got) // Need to sort as `yaml.Unmarshal` doesn't always return in the same order.
-			if !reflect.DeepEqual(got, tt.want) {
+			if !slices.Equal(got, tt.want) {
 				t.Errorf("GetAllUsers() = %v, want %v", got, tt.want)
 			}
 		})
