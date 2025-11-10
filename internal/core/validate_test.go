@@ -112,3 +112,58 @@ func TestValidateMainConfig(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateLocalConfig(t *testing.T) {
+	tests := []struct {
+		name string // description of this test case
+		// Named input parameters for target function.
+		cfg     *config.LocalConfig
+		ghHosts []string
+		wantErr bool
+	}{
+		{
+			name:    "empty config should error",
+			cfg:     &config.LocalConfig{},
+			ghHosts: []string{},
+			wantErr: true,
+		},
+		{
+			name:    "account not in ghHosts should error",
+			cfg:     &config.LocalConfig{Account: "john"},
+			ghHosts: []string{"alice", "bob"},
+			wantErr: true,
+		},
+		{
+			name:    "account present in ghHosts should succeed",
+			cfg:     &config.LocalConfig{Account: "john"},
+			ghHosts: []string{"alice", "john", "bob"},
+			wantErr: false,
+		},
+		{
+			name:    "empty ghHosts with account set should error",
+			cfg:     &config.LocalConfig{Account: "john"},
+			ghHosts: []string{},
+			wantErr: true,
+		},
+		{
+			name:    "account with different case in ghHosts should error (case-sensitive)",
+			cfg:     &config.LocalConfig{Account: "John"},
+			ghHosts: []string{"john"},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotErr := core.ValidateLocalConfig(tt.cfg, tt.ghHosts)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("ValidateLocalConfig() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("ValidateLocalConfig() succeeded unexpectedly")
+			}
+		})
+	}
+}

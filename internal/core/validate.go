@@ -24,3 +24,15 @@ func ValidateMainConfig(cfg *config.MainConfig, ghHosts []string) []error {
 
 	return errs
 }
+
+func ValidateLocalConfig(cfg *config.LocalConfig, ghHosts []string) error {
+	if cfg.Account == "" {
+		return fmt.Errorf("default account is required")
+	}
+
+	if !slices.Contains(ghHosts, cfg.Account) {
+		return fmt.Errorf("account %q is not authenicated with GH CLI", cfg.Account)
+	}
+
+	return nil
+}
