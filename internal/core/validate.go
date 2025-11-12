@@ -18,7 +18,7 @@ func ValidateMainConfig(cfg *config.MainConfig, ghHosts []string) []error {
 
 	for account := range cfg.Accounts {
 		if !slices.Contains(ghHosts, account) {
-			errs = append(errs, fmt.Errorf("account %q is not authenicated with GH CLI", account))
+			errs = append(errs, fmt.Errorf("account %q is not authenticated with GH CLI", account))
 		}
 	}
 
@@ -31,7 +31,7 @@ func ValidateLocalConfig(cfg *config.LocalConfig, ghHosts []string) error {
 	}
 
 	if !slices.Contains(ghHosts, cfg.Account) {
-		return fmt.Errorf("account %q is not authenicated with GH CLI", cfg.Account)
+		return fmt.Errorf("account %q is not authenticated with GH CLI", cfg.Account)
 	}
 
 	return nil

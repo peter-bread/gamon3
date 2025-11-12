@@ -64,7 +64,7 @@ func TestValidateMainConfig(t *testing.T) {
 			ghHosts: []string{},
 			want: []error{
 				fmt.Errorf("default account %q is not authenticated with GH CLI", "john"),
-				fmt.Errorf("account %q is not authenicated with GH CLI", "john"),
+				fmt.Errorf("account %q is not authenticated with GH CLI", "john"),
 			},
 		},
 		{
@@ -78,7 +78,7 @@ func TestValidateMainConfig(t *testing.T) {
 			},
 			ghHosts: []string{"alice"},
 			want: []error{
-				fmt.Errorf("account %q is not authenicated with GH CLI", "bob"),
+				fmt.Errorf("account %q is not authenticated with GH CLI", "bob"),
 			},
 		},
 		{
