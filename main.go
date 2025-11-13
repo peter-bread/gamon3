@@ -22,7 +22,13 @@ THE SOFTWARE.
 
 package main
 
-import "github.com/peter-bread/gamon3/cmd"
+import (
+	"fmt"
+	"os"
+
+	"github.com/peter-bread/gamon3/cmd"
+	"github.com/peter-bread/gamon3/internal/core"
+)
 
 var (
 	version = "dev"
@@ -30,7 +36,12 @@ var (
 	date    = "unknown"
 )
 
+func init() {
+	fmt.Println(core.Resolve())
+}
+
 func main() {
+	os.Exit(0)
 	cmd.SetVersion(version, commit, date)
 	cmd.Execute()
 }

@@ -26,13 +26,13 @@ func LoadGhHosts(path string) (*GhHosts, error) {
 	return &hosts, yaml.Unmarshal(data, &hosts)
 }
 
-// GetCurrentUser returns the current GH CLI user.
-func (g *GhHosts) GetCurrentUser() string {
+// CurrentUser returns the current GH CLI user.
+func (g *GhHosts) CurrentUser() string {
 	return g.GitHubCom.User
 }
 
-// GetAllUsers returns a list of all authenticated GH CLI users.
-func (g *GhHosts) GetAllUsers() []string {
+// AllUsers returns a list of all authenticated GH CLI users.
+func (g *GhHosts) AllUsers() []string {
 	users := make([]string, 0, len(g.GitHubCom.Users))
 	for user := range g.GitHubCom.Users {
 		users = append(users, user)

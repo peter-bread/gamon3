@@ -1,0 +1,49 @@
+package core
+
+import (
+	"os"
+
+	"github.com/peter-bread/gamon3/internal/config"
+	"github.com/peter-bread/gamon3/internal/locator"
+)
+
+type Result struct {
+	Current     string
+	Account     string
+	SourceKind  SourceKind
+	SourceValue string
+	Err         error
+}
+
+type SourceKind string
+
+const (
+	Env   SourceKind = "env"
+	Local SourceKind = "local"
+	Main  SourceKind = "main"
+)
+
+func Resolve() Result {
+	ghHostsPath, _ := locator.GhHostsPath()
+	ghHosts, _ := config.LoadGhHosts(ghHostsPath)
+	users := ghHosts.AllUsers()
+	current := ghHosts.CurrentUser()
+
+	if envAccount, found := locator.EnvAccount(); found {
+		return Result{Current: current, Account: envAccount, SourceKind: Env, SourceValue: "GAMON3_ACCOUNT"}
+	}
+
+	if localConfigPath, err := locator.LocalConfigPath(); err == nil {
+		localConfig, _ := config.LoadLocalConfig(localConfigPath)
+		// TODO: Handle loading error.
+		if err = ValidateLocalConfig(localConfig, users); err == nil {
+			return Result{Current: current, Account: localConfig.Account, SourceKind: Local, SourceValue: localConfigPath}
+		}
+	}
+
+	mainConfigPath, _ := locator.MainConfigPath()
+	mainConfig, _ := config.LoadMainConfig(mainConfigPath)
+
+	account := MatchAccount(os.Getenv("PWD"), mainConfig.Accounts, mainConfig.Default)
+	return Result{Current: current, Account: account, SourceKind: Main, SourceValue: mainConfigPath}
+}

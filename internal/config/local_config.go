@@ -1,6 +1,8 @@
 package config
 
 import (
+	"bytes"
+	"fmt"
 	"os"
 
 	"github.com/goccy/go-yaml"
@@ -18,6 +20,11 @@ func LoadLocalConfig(path string) (*LocalConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	decoder := yaml.NewDecoder(bytes.NewReader(data), yaml.DisallowUnknownField())
 	var cfg LocalConfig
-	return &cfg, yaml.Unmarshal(data, &cfg)
+	if err := decoder.Decode(&cfg); err != nil {
+		return nil, fmt.Errorf("%s", yaml.FormatError(err, true, true))
+	}
+	return &cfg, nil
 }

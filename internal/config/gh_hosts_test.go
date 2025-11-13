@@ -73,7 +73,7 @@ func TestGhHosts_GetCurrentUser(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not construct receiver type: %v", err)
 			}
-			got := g.GetCurrentUser()
+			got := g.CurrentUser()
 			if got != tt.want {
 				t.Errorf("GetCurrentUser() = %v, want %v", got, tt.want)
 			}
@@ -100,7 +100,7 @@ func TestGhHosts_GetAllUsers(t *testing.T) {
 			if err != nil {
 				t.Fatalf("could not construct receiver type: %v", err)
 			}
-			got := g.GetAllUsers()
+			got := g.AllUsers()
 			sort.Strings(got) // Need to sort as `yaml.Unmarshal` doesn't always return in the same order.
 			if !slices.Equal(got, tt.want) {
 				t.Errorf("GetAllUsers() = %v, want %v", got, tt.want)
