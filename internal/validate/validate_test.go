@@ -1,4 +1,4 @@
-package core_test
+package validate_test
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/peter-bread/gamon3/internal/config"
-	"github.com/peter-bread/gamon3/internal/core"
+	"github.com/peter-bread/gamon3/internal/validate"
 )
 
 func errorStrings(errs []error) []string {
@@ -96,7 +96,7 @@ func TestValidateMainConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := core.ValidateMainConfig(tt.cfg, tt.ghHosts)
+			got := validate.ValidateMainConfig(tt.cfg, tt.ghHosts)
 
 			// Convert to strings as errors cannot be sorted by default.
 			gotStr := errorStrings(got)
@@ -154,7 +154,7 @@ func TestValidateLocalConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotErr := core.ValidateLocalConfig(tt.cfg, tt.ghHosts)
+			gotErr := validate.ValidateLocalConfig(tt.cfg, tt.ghHosts)
 			if gotErr != nil {
 				if !tt.wantErr {
 					t.Errorf("ValidateLocalConfig() failed: %v", gotErr)

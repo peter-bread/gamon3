@@ -27,7 +27,7 @@ import (
 	"os"
 
 	"github.com/peter-bread/gamon3/cmd"
-	"github.com/peter-bread/gamon3/internal/core"
+	"github.com/peter-bread/gamon3/internal/resolve"
 )
 
 var (
@@ -37,7 +37,7 @@ var (
 )
 
 func init() {
-	fmt.Println(core.Resolve())
+	fmt.Println(resolve.Resolve())
 	os.Exit(0)
 }
 

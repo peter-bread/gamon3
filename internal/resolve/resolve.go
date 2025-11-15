@@ -1,4 +1,4 @@
-package core
+package resolve
 
 import (
 	"fmt"
@@ -6,7 +6,9 @@ import (
 	"slices"
 
 	"github.com/peter-bread/gamon3/internal/config"
+	"github.com/peter-bread/gamon3/internal/data"
 	"github.com/peter-bread/gamon3/internal/locator"
+	"github.com/peter-bread/gamon3/internal/matcher"
 )
 
 type SourceKind string
@@ -41,7 +43,7 @@ func DoEnv(account string, gh *config.GhHosts) (Result, error) {
 		Current:     gh.CurrentUser(),
 		Account:     account,
 		SourceKind:  Env,
-		SourceValue: "GAMON3_ACCOUNT",
+		SourceValue: data.EnvVarAccount,
 	}, nil
 }
 
@@ -81,21 +83,9 @@ func DoMain(path string, gh *config.GhHosts) (Result, error) {
 	}
 
 	// This is the account that should be used based on the current directory.
-	account := MatchAccount(cwd, cfg.Accounts, cfg.Default)
-
-	// I think this can only happen if account == cfg.Default. Otherwise there would be empty keys in the YAML file.
-	// This is NOT the case.
-	// Below is an example YAML file which parses successfully but the first key in `accounts` is empty.
-	//
-	// default: peter-bread
-	// accounts:
-	// 	'':
-	// 		- $DEVELOPER/ak22112/
-	//
-	// TODO: Handle the error in MatchAccount
-
-	if account == "" {
-		return Result{}, fmt.Errorf("main config field 'default' cannot be empty")
+	account, err := matcher.MatchAccount(cwd, cfg.Accounts, cfg.Default)
+	if err != nil {
+		return Result{}, fmt.Errorf("main config %s", err)
 	}
 
 	if !IsValidGitHubAccount(account, gh) {

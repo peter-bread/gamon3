@@ -1,11 +1,11 @@
-package core_test
+package matcher_test
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/peter-bread/gamon3/internal/core"
+	"github.com/peter-bread/gamon3/internal/matcher"
 )
 
 func TestMatchAccount(t *testing.T) {
@@ -18,6 +18,7 @@ func TestMatchAccount(t *testing.T) {
 		accounts       map[string][]string
 		defaultAccount string
 		want           string
+		wantErr        bool
 	}{
 		{
 			name:           "returns default when no accounts match",
@@ -25,6 +26,7 @@ func TestMatchAccount(t *testing.T) {
 			accounts:       map[string][]string{"steve": {"/home/steve/work"}},
 			defaultAccount: "john",
 			want:           "john",
+			wantErr:        false,
 		},
 		{
 			name:           "matches correct account based on path prefix",
@@ -32,6 +34,7 @@ func TestMatchAccount(t *testing.T) {
 			accounts:       map[string][]string{"alice": {"/home/alice"}, "bob": {"/home/bob"}},
 			defaultAccount: "bob",
 			want:           "alice",
+			wantErr:        false,
 		},
 		{
 			name:           "matches using ~ expansion",
@@ -39,6 +42,7 @@ func TestMatchAccount(t *testing.T) {
 			accounts:       map[string][]string{"alice": {"~/projects"}},
 			defaultAccount: "bob",
 			want:           "alice",
+			wantErr:        false,
 		},
 		{
 			name:           "matches using env var expansion",
@@ -46,6 +50,7 @@ func TestMatchAccount(t *testing.T) {
 			accounts:       map[string][]string{"alice": {"$HOME/work"}},
 			defaultAccount: "bob",
 			want:           "alice",
+			wantErr:        false,
 		},
 		{
 			name:           "returns default when accounts map is empty",
@@ -53,11 +58,35 @@ func TestMatchAccount(t *testing.T) {
 			accounts:       map[string][]string{},
 			defaultAccount: "steve",
 			want:           "steve",
+			wantErr:        false,
+		},
+		{
+			name:           "error when default account is empty and no match",
+			dir:            "/no/match",
+			accounts:       map[string][]string{"alice": {"/some/path"}},
+			defaultAccount: "",
+			wantErr:        true,
+		},
+		{
+			name:           "error when account key is empty",
+			dir:            "/foo",
+			accounts:       map[string][]string{"": {"/foo"}},
+			defaultAccount: "fallback",
+			wantErr:        true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := core.MatchAccount(tt.dir, tt.accounts, tt.defaultAccount)
+			got, gotErr := matcher.MatchAccount(tt.dir, tt.accounts, tt.defaultAccount)
+			if gotErr != nil {
+				if !tt.wantErr {
+					t.Errorf("MatchAccount() failed: %v", gotErr)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Fatal("MatchAccount() succeeded unexpectedly")
+			}
 			if got != tt.want {
 				t.Errorf("MatchAccount() = %v, want %v", got, tt.want)
 			}

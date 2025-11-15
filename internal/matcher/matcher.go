@@ -1,6 +1,7 @@
-package core
+package matcher
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -27,25 +28,27 @@ func normalise(path string) string {
 }
 
 // MatchAccount returns the account that applies to the given directory.
-func MatchAccount(dir string, accounts map[string][]string, defaultAccount string) string {
-	if dir == "" {
-		return defaultAccount
-	}
-
+func MatchAccount(dir string, accounts map[string][]string, defaultAccount string) (string, error) {
 	abs, err := filepath.Abs(dir)
 	if err != nil {
-		// If something goes wrong resolving the path, fall back to default.
-		return defaultAccount
+		return "", err
 	}
 
 	for account, paths := range accounts {
 		for _, path := range paths {
 			norm := normalise(path)
 			if strings.HasPrefix(abs, norm) {
-				return account
+				if account == "" {
+					return "", fmt.Errorf("account key cannot be empty for path %q", norm)
+				}
+				return account, nil
 			}
 		}
 	}
 
-	return defaultAccount
+	if defaultAccount == "" {
+		return "", fmt.Errorf("field 'default' cannot be empty")
+	}
+
+	return defaultAccount, nil
 }

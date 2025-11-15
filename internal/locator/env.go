@@ -1,7 +1,11 @@
 package locator
 
-import "os"
+import (
+	"os"
+
+	"github.com/peter-bread/gamon3/internal/data"
+)
 
 func EnvAccount() (string, bool) {
-	return os.LookupEnv("GAMON3_ACCOUNT")
+	return os.LookupEnv(data.EnvVarAccount)
 }
