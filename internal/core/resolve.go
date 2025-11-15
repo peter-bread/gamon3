@@ -17,107 +17,123 @@ const (
 	Main  SourceKind = "main"
 )
 
-type ResolveInput struct {
-	EnvAccount      string
-	EnvSourceValue  string
-	LocalConfig     *config.LocalConfig
-	LocalConfigPath string
-	MainConfig      *config.MainConfig
-	MainConfigPath  string
-	GhUsers         []string
-	CurrentGhUser   string
-	Pwd             string
-}
-
 type Result struct {
 	Current     string
 	Account     string
 	SourceKind  SourceKind
 	SourceValue string
-	Warnings    []string
-	Err         error
 }
 
-func ResolvePure(in ResolveInput) Result {
-	if in.EnvAccount != "" {
-		if slices.Contains(in.GhUsers, in.EnvAccount) {
-			return Result{
-				Current:     in.CurrentGhUser,
-				Account:     in.EnvAccount,
-				SourceKind:  Env,
-				SourceValue: "GAMON3_ACCOUNT",
-			}
-		}
-		return Result{
-			Err: fmt.Errorf("env account %q is not authenticated", in.EnvAccount),
-		}
+func IsValidGitHubAccount(account string, gh *config.GhHosts) bool {
+	return slices.Contains(gh.AllUsers(), account)
+}
+
+func DoEnv(account string, gh *config.GhHosts) (Result, error) {
+	if account == "" {
+		return Result{}, fmt.Errorf("env account cannot be empty")
 	}
 
-	if in.LocalConfig != nil && in.LocalConfig.Account != "" {
-		if slices.Contains(in.GhUsers, in.LocalConfig.Account) {
-			return Result{
-				Current:     in.CurrentGhUser,
-				Account:     in.LocalConfig.Account,
-				SourceKind:  Local,
-				SourceValue: in.LocalConfigPath,
-			}
-		}
-		return Result{
-			Err: fmt.Errorf("local account %q is not authenticated", in.LocalConfig.Account),
-		}
-	}
-
-	if in.MainConfig == nil {
-		return Result{
-			Err: fmt.Errorf("main config missing"),
-		}
-	}
-
-	account := MatchAccount(in.Pwd, in.MainConfig.Accounts, in.MainConfig.Default)
-	if !slices.Contains(in.GhUsers, account) {
-		return Result{
-			Err: fmt.Errorf("account %q is not authenticated", account),
-		}
+	if !IsValidGitHubAccount(account, gh) {
+		return Result{}, fmt.Errorf("env account %q is not authenticated", account)
 	}
 
 	return Result{
-		Current:     in.CurrentGhUser,
+		Current:     gh.CurrentUser(),
 		Account:     account,
-		SourceKind:  Main,
-		SourceValue: in.MainConfigPath,
-	}
+		SourceKind:  Env,
+		SourceValue: "GAMON3_ACCOUNT",
+	}, nil
 }
 
-func Resolve() Result {
-	ghHostsPath, _ := locator.GhHostsPath()
-	ghHosts, _ := config.LoadGhHosts(ghHostsPath)
-
-	localPath, _ := locator.LocalConfigPath()
-	localConfig, err := config.LoadLocalConfig(localPath)
+func DoLocal(path string, gh *config.GhHosts) (Result, error) {
+	cfg, err := config.LoadLocalConfig(path)
 	if err != nil {
-		fmt.Println(err)
+		return Result{}, err
 	}
 
-	mainPath, _ := locator.MainConfigPath()
-	mainConfig, _ := config.LoadMainConfig(mainPath)
+	account := cfg.Account
 
-	envAccount, found := locator.EnvAccount()
-	envVar := "GAMON3_ACCOUNT"
-
-	if !found {
-		envAccount = ""
-		envVar = ""
+	if account == "" {
+		return Result{}, fmt.Errorf("local config field 'account' cannot be empty")
 	}
 
-	return ResolvePure(ResolveInput{
-		EnvAccount:      envAccount,
-		EnvSourceValue:  envVar,
-		LocalConfig:     localConfig,
-		LocalConfigPath: localPath,
-		MainConfig:      mainConfig,
-		MainConfigPath:  mainPath,
-		GhUsers:         ghHosts.AllUsers(),
-		CurrentGhUser:   ghHosts.CurrentUser(),
-		Pwd:             os.Getenv("PWD"),
-	})
+	if !IsValidGitHubAccount(account, gh) {
+		return Result{}, fmt.Errorf("local config account %q is not authenticated", account)
+	}
+
+	return Result{
+		Current:     gh.CurrentUser(),
+		Account:     account,
+		SourceKind:  Local,
+		SourceValue: path,
+	}, nil
+}
+
+func DoMain(path string, gh *config.GhHosts) (Result, error) {
+	cfg, err := config.LoadMainConfig(path)
+	if err != nil {
+		return Result{}, err
+	}
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		return Result{}, err
+	}
+
+	// This is the account that should be used based on the current directory.
+	account := MatchAccount(cwd, cfg.Accounts, cfg.Default)
+
+	// I think this can only happen if account == cfg.Default. Otherwise there would be empty keys in the YAML file.
+	// This is NOT the case.
+	// Below is an example YAML file which parses successfully but the first key in `accounts` is empty.
+	//
+	// default: peter-bread
+	// accounts:
+	// 	'':
+	// 		- $DEVELOPER/ak22112/
+	//
+	// TODO: Handle the error in MatchAccount
+
+	if account == "" {
+		return Result{}, fmt.Errorf("main config field 'default' cannot be empty")
+	}
+
+	if !IsValidGitHubAccount(account, gh) {
+		return Result{}, fmt.Errorf("main config account %q is not authenticated", account)
+	}
+
+	return Result{
+		Current:     gh.CurrentUser(),
+		Account:     account,
+		SourceKind:  Main,
+		SourceValue: path,
+	}, nil
+}
+
+// Resolve decides which method should be used to determine current account and delegates to other functions.
+// It returns information about the account, and any errors that occur.
+func Resolve() (Result, error) {
+	ghHostsPath, err := locator.GhHostsPath()
+	if err != nil {
+		return Result{}, err
+	}
+
+	ghHosts, err := config.LoadGhHosts(ghHostsPath)
+	if err != nil {
+		return Result{}, err
+	}
+
+	if envAccount, found := locator.EnvAccount(); found {
+		return DoEnv(envAccount, ghHosts)
+	}
+
+	if localPath, err := locator.LocalConfigPath(); err == nil {
+		return DoLocal(localPath, ghHosts)
+	}
+
+	if mainPath, err := locator.MainConfigPath(); err == nil {
+		return DoMain(mainPath, ghHosts)
+	}
+
+	return Result{}, fmt.Errorf("no method found to resolve account")
 }

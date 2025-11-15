@@ -27,9 +27,6 @@ func normalise(path string) string {
 }
 
 // MatchAccount returns the account that applies to the given directory.
-// - dir must be absolute (caller ensures this).
-// - accounts is a map of account -> list of directories.
-// - defaultAccount is returned when no match occurs.
 func MatchAccount(dir string, accounts map[string][]string, defaultAccount string) string {
 	if dir == "" {
 		return defaultAccount

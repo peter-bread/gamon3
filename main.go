@@ -38,10 +38,10 @@ var (
 
 func init() {
 	fmt.Println(core.Resolve())
+	os.Exit(0)
 }
 
 func main() {
-	os.Exit(0)
 	cmd.SetVersion(version, commit, date)
 	cmd.Execute()
 }
