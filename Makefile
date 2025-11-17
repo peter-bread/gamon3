@@ -8,6 +8,9 @@ LDFLAGS		?= -X main.version=$(VERSION)
 build:
 	mkdir -p $(BUILD_DIR)
 	go build -o $(BUILD_DIR) -v -ldflags "$(LDFLAGS)"
+
+test:
+	go test -v ./...
 	
 clean:
 	go clean

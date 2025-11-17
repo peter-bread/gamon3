@@ -27,6 +27,8 @@ import (
 	"os"
 
 	"github.com/peter-bread/gamon3/cmd"
+	"github.com/peter-bread/gamon3/internal/config"
+	"github.com/peter-bread/gamon3/internal/locator"
 	"github.com/peter-bread/gamon3/internal/resolve"
 )
 
@@ -36,8 +38,35 @@ var (
 	date    = "unknown"
 )
 
+type RealLocator struct{}
+
+func (RealLocator) GhHostsPath() (string, error)     { return locator.GhHostsPath() }
+func (RealLocator) EnvAccount() (string, bool)       { return locator.EnvAccount() }
+func (RealLocator) LocalConfigPath() (string, error) { return locator.LocalConfigPath() }
+func (RealLocator) MainConfigPath() (string, error)  { return locator.MainConfigPath() }
+
+type RealLoader[T any] struct {
+	loadFunc func(string) (T, error)
+}
+
+func (r RealLoader[T]) Load(path string) (T, error) {
+	return r.loadFunc(path)
+}
+
+type RealOS struct{}
+
+func (RealOS) Getwd() (string, error) { return os.Getwd() }
+
 func init() {
-	fmt.Println(resolve.Resolve())
+	ghLoader := RealLoader[resolve.GhHosts]{loadFunc: func(path string) (resolve.GhHosts, error) {
+		return config.LoadGhHosts(path)
+	}}
+
+	localLoader := RealLoader[*config.LocalConfig]{loadFunc: config.LoadLocalConfig}
+
+	mainLoader := RealLoader[*config.MainConfig]{loadFunc: config.LoadMainConfig}
+
+	fmt.Println(resolve.Resolve(RealLocator{}, ghLoader, localLoader, mainLoader, RealOS{}))
 	os.Exit(0)
 }
 
