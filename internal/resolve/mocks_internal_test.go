@@ -18,3 +18,21 @@ type mockLocalLoader struct {
 func (m mockLocalLoader) Load(path string) (*config.LocalConfig, error) {
 	return m.cfg, m.err
 }
+
+type mockMainLoader struct {
+	cfg *config.MainConfig
+	err error
+}
+
+func (m mockMainLoader) Load(path string) (*config.MainConfig, error) {
+	return m.cfg, m.err
+}
+
+type mockOS struct {
+	cwd string
+	err error
+}
+
+func (m mockOS) Getwd() (string, error) {
+	return m.cwd, m.err
+}
