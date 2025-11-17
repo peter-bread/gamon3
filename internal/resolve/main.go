@@ -6,7 +6,7 @@ import (
 	"github.com/peter-bread/gamon3/internal/matcher"
 )
 
-func DoMain(path string, gh GhHosts, loader MainConfigLoader, os OS) (Result, error) {
+func resolveMain(path string, gh GhHosts, loader MainConfigLoader, os OS) (Result, error) {
 	cfg, err := loader.Load(path)
 	if err != nil {
 		return Result{}, err
@@ -23,7 +23,7 @@ func DoMain(path string, gh GhHosts, loader MainConfigLoader, os OS) (Result, er
 		return Result{}, fmt.Errorf("main config %s", err)
 	}
 
-	if !IsValidGitHubAccount(account, gh) {
+	if !isValidGitHubAccount(account, gh) {
 		return Result{}, fmt.Errorf("main config account %q is not authenticated", account)
 	}
 

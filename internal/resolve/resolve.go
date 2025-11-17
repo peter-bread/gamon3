@@ -18,15 +18,15 @@ func Resolve(l Locator, ghLoader GhHostsLoader, localLoader LocalConfigLoader, m
 	}
 
 	if envAccount, found := l.EnvAccount(); found {
-		return DoEnv(envAccount, ghHosts)
+		return resolveEnv(envAccount, ghHosts)
 	}
 
 	if localPath, err := l.LocalConfigPath(); err == nil {
-		return DoLocal(localPath, ghHosts, localLoader)
+		return resolveLocal(localPath, ghHosts, localLoader)
 	}
 
 	if mainPath, err := l.MainConfigPath(); err == nil {
-		return DoMain(mainPath, ghHosts, mainLoader, os)
+		return resolveMain(mainPath, ghHosts, mainLoader, os)
 	}
 
 	return Result{}, fmt.Errorf("no config sources found to be able to resolve account")

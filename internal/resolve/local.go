@@ -2,7 +2,7 @@ package resolve
 
 import "fmt"
 
-func DoLocal(path string, gh GhHosts, loader LocalConfigLoader) (Result, error) {
+func resolveLocal(path string, gh GhHosts, loader LocalConfigLoader) (Result, error) {
 	cfg, err := loader.Load(path)
 	if err != nil {
 		return Result{}, err
@@ -14,7 +14,7 @@ func DoLocal(path string, gh GhHosts, loader LocalConfigLoader) (Result, error) 
 		return Result{}, fmt.Errorf("local config field 'account' cannot be empty")
 	}
 
-	if !IsValidGitHubAccount(account, gh) {
+	if !isValidGitHubAccount(account, gh) {
 		return Result{}, fmt.Errorf("local config account %q is not authenticated", account)
 	}
 
