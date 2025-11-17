@@ -2,24 +2,18 @@ package matcher
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 )
 
-type FP interface {
-	Abs(path string) (string, error)
-}
-
 // MatchAccount returns the account that applies to the given directory.
-func MatchAccount(fp FP, dir string, accounts map[string][]string, defaultAccount string) (string, error) {
-	abs, err := fp.Abs(dir)
-	if err != nil {
-		return "", err
-	}
+func MatchAccount(absDirPath string, accounts map[string][]string, defaultAccount string) (string, error) {
+	cleanDirPath := filepath.Clean(absDirPath)
 
 	for account, paths := range accounts {
 		for _, path := range paths {
 			norm := normalise(path)
-			if strings.HasPrefix(abs, norm) {
+			if strings.HasPrefix(cleanDirPath, norm) {
 				if account == "" {
 					return "", fmt.Errorf("account key cannot be empty for path %q", norm)
 				}
