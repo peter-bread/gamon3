@@ -38,35 +38,35 @@ var (
 	date    = "unknown"
 )
 
-type RealLocator struct{}
+type Locator struct{}
 
-func (RealLocator) GhHostsPath() (string, error)     { return locator.GhHostsPath() }
-func (RealLocator) EnvAccount() (string, bool)       { return locator.EnvAccount() }
-func (RealLocator) LocalConfigPath() (string, error) { return locator.LocalConfigPath() }
-func (RealLocator) MainConfigPath() (string, error)  { return locator.MainConfigPath() }
+func (Locator) GhHostsPath() (string, error)     { return locator.GhHostsPath() }
+func (Locator) EnvAccount() (string, bool)       { return locator.EnvAccount() }
+func (Locator) LocalConfigPath() (string, error) { return locator.LocalConfigPath() }
+func (Locator) MainConfigPath() (string, error)  { return locator.MainConfigPath() }
 
-type RealLoader[T any] struct {
+type Loader[T any] struct {
 	loadFunc func(string) (T, error)
 }
 
-func (r RealLoader[T]) Load(path string) (T, error) {
+func (r Loader[T]) Load(path string) (T, error) {
 	return r.loadFunc(path)
 }
 
-type RealOS struct{}
+type OS struct{}
 
-func (RealOS) Getwd() (string, error) { return os.Getwd() }
+func (OS) Getwd() (string, error) { return os.Getwd() }
 
 func init() {
-	ghLoader := RealLoader[resolve.GhHosts]{loadFunc: func(path string) (resolve.GhHosts, error) {
+	ghLoader := Loader[resolve.GhHosts]{loadFunc: func(path string) (resolve.GhHosts, error) {
 		return config.LoadGhHosts(path)
 	}}
 
-	localLoader := RealLoader[*config.LocalConfig]{loadFunc: config.LoadLocalConfig}
+	localLoader := Loader[*config.LocalConfig]{loadFunc: config.LoadLocalConfig}
 
-	mainLoader := RealLoader[*config.MainConfig]{loadFunc: config.LoadMainConfig}
+	mainLoader := Loader[*config.MainConfig]{loadFunc: config.LoadMainConfig}
 
-	fmt.Println(resolve.Resolve(RealLocator{}, ghLoader, localLoader, mainLoader, RealOS{}))
+	fmt.Println(resolve.Resolve(Locator{}, ghLoader, localLoader, mainLoader, OS{}))
 	os.Exit(0)
 }
 
