@@ -2,34 +2,16 @@ package matcher
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 )
 
-func normalise(path string) string {
-	if path == "" {
-		return path
-	}
-
-	if path == "~" {
-		if home, err := os.UserHomeDir(); err == nil {
-			return home
-		}
-	}
-
-	if strings.HasPrefix(path, "~/") {
-		if home, err := os.UserHomeDir(); err == nil {
-			path = filepath.Join(home, path[2:])
-		}
-	}
-
-	return filepath.Clean(os.ExpandEnv(path))
+type FP interface {
+	Abs(path string) (string, error)
 }
 
 // MatchAccount returns the account that applies to the given directory.
-func MatchAccount(dir string, accounts map[string][]string, defaultAccount string) (string, error) {
-	abs, err := filepath.Abs(dir)
+func MatchAccount(fp FP, dir string, accounts map[string][]string, defaultAccount string) (string, error) {
+	abs, err := fp.Abs(dir)
 	if err != nil {
 		return "", err
 	}
