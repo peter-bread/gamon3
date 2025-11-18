@@ -41,6 +41,12 @@ var SourceCmd = &cobra.Command{
 Prints which GH CLI account should be active and which method was used
 to resolve this.
 
+If account resolution is successful, the output has the following format:
+  <account> <source kind> <source value>
+
+If account resolution is unsuccessful, and error message will be printed and
+the program will exit with a non-zero exit code.
+
 There are three methods used to determine which account should be used:
 1. $GAMON3_ACCOUNT environment variable
 2. Checking '.gamon.yaml' or '.gamon.yml' local config file
