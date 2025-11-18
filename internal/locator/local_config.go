@@ -1,13 +1,22 @@
 package locator
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
 
 func LocalConfigPath() (string, error) {
-	start, _ := os.Getwd()
-	stop, _ := os.UserHomeDir()
+	start, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	stop, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
 	dir := start
 	candidates := []string{".gamon3.yaml", ".gamon3.yml"}
 
@@ -27,6 +36,6 @@ func LocalConfigPath() (string, error) {
 
 		dir = parent
 	}
-	// TODO: Custom error?
-	return "", os.ErrNotExist
+
+	return "", fmt.Errorf("could not find a local config file starting from %q", start)
 }
