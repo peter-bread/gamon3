@@ -27,12 +27,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/peter-bread/gamon3/internal/gamon3cmd"
+	"github.com/peter-bread/gamon3/internal/resolve/runtime"
 
 	"github.com/spf13/cobra"
 )
 
-// SourceCmd represents the run command.
+// SourceCmd represents the source command.
 var SourceCmd = &cobra.Command{
 	Use:   "source",
 	Short: "Prints source of current acount",
@@ -47,12 +47,14 @@ There are three methods used to determine which account should be used:
 3. Main user config file 'config.yaml'
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		_, _, source, err := gamon3cmd.Resolve()
+		resolver := runtime.NewResolver()
+
+		result, err := resolver.Resolve()
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 
-		fmt.Println(source)
+		fmt.Println(result.Account, result.SourceKind, result.SourceValue)
 	},
 }
