@@ -1,6 +1,7 @@
 package locator
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -11,8 +12,16 @@ func MainConfigPath() (string, error) {
 		return "", err
 	}
 
-	// TODO: Also check for config.yml
-	return filepath.Join(dir, "config.yaml"), nil
+	candidates := []string{"config.yaml", "config.yml"}
+
+	for _, name := range candidates {
+		candidate := filepath.Join(dir, name)
+		if _, err := os.Stat(candidate); err == nil {
+			return candidate, nil
+		}
+	}
+
+	return "", fmt.Errorf("could not find a main config file")
 }
 
 func getMainConfigDir() (string, error) {
