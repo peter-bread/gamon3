@@ -32,7 +32,11 @@ func TestLoadGhHosts(t *testing.T) {
 					User: "alice",
 				},
 			},
-			wantErr: false,
+		},
+		{
+			name:    "error if cannot read file",
+			path:    "path/to/file/that/does/not/exist",
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {

@@ -21,12 +21,15 @@ func TestLoadLocalConfig(t *testing.T) {
 			want: &config.LocalConfig{
 				Account: "jane",
 			},
-			wantErr: false,
 		},
 		{
 			name:    "invalid config",
 			path:    "testdata/local_config/invalid.yaml",
-			want:    nil,
+			wantErr: true,
+		},
+		{
+			name:    "error if cannot read file",
+			path:    "path/to/file/that/does/not/exist",
 			wantErr: true,
 		},
 	}

@@ -24,12 +24,15 @@ func TestLoadMainConfig(t *testing.T) {
 					"steve": {"$HOME/steve"},
 				},
 			},
-			wantErr: false,
 		},
 		{
 			name:    "invalid config",
 			path:    "testdata/main_config/invalid.yaml",
-			want:    nil,
+			wantErr: true,
+		},
+		{
+			name:    "error if cannot read file",
+			path:    "path/to/file/that/does/not/exist",
 			wantErr: true,
 		},
 	}
