@@ -23,13 +23,7 @@ THE SOFTWARE.
 package main
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/peter-bread/gamon3/cmd"
-	"github.com/peter-bread/gamon3/internal/config"
-	"github.com/peter-bread/gamon3/internal/locator"
-	"github.com/peter-bread/gamon3/internal/resolve"
 )
 
 var (
@@ -38,37 +32,11 @@ var (
 	date    = "unknown"
 )
 
-type Locator struct{}
-
-func (Locator) GhHostsPath() (string, error)     { return locator.GhHostsPath() }
-func (Locator) EnvAccount() (string, bool)       { return locator.EnvAccount() }
-func (Locator) LocalConfigPath() (string, error) { return locator.LocalConfigPath() }
-func (Locator) MainConfigPath() (string, error)  { return locator.MainConfigPath() }
-
-type Loader[T any] struct {
-	loadFunc func(string) (T, error)
-}
-
-func (r Loader[T]) Load(path string) (T, error) {
-	return r.loadFunc(path)
-}
-
-type OS struct{}
-
-func (OS) Getwd() (string, error) { return os.Getwd() }
-
-func init() {
-	ghLoader := Loader[resolve.GhHosts]{loadFunc: func(path string) (resolve.GhHosts, error) {
-		return config.LoadGhHosts(path)
-	}}
-
-	localLoader := Loader[*config.LocalConfig]{loadFunc: config.LoadLocalConfig}
-
-	mainLoader := Loader[*config.MainConfig]{loadFunc: config.LoadMainConfig}
-
-	fmt.Println(resolve.Resolve(Locator{}, ghLoader, localLoader, mainLoader, OS{}))
-	os.Exit(0)
-}
+// func init() {
+// 	resolver := runtime.NewResolver()
+// 	fmt.Println(resolver.Resolve())
+// 	os.Exit(0)
+// }
 
 func main() {
 	cmd.SetVersion(version, commit, date)
