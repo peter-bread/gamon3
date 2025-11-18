@@ -1,4 +1,4 @@
-.PHONY: build clean install goreleaser
+.PHONY: build test cover clean install goreleaser
 
 BUILD_DIR = build
 
