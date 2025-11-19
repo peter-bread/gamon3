@@ -25,7 +25,6 @@ package source
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/peter-bread/gamon3/internal/resolve/runtime"
 
@@ -52,15 +51,16 @@ There are three methods used to determine which account should be used:
 2. Checking '.gamon.yaml' or '.gamon.yml' local config file
 3. Main user config file 'config.yaml'
 `,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		resolver := runtime.NewResolver()
 
 		result, err := resolver.Resolve()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
 
-		fmt.Println(result.Account, result.SourceKind, result.SourceValue)
+		_, err = fmt.Println(result.Account, result.SourceKind, result.SourceValue)
+
+		return err
 	},
 }
