@@ -15,11 +15,14 @@ type Locator struct{}
 func (Locator) GhHostsPath() (string, error)     { return locator.GhHostsPath() }
 func (Locator) EnvAccount() (string, bool)       { return locator.EnvAccount() }
 func (Locator) LocalConfigPath() (string, error) { return locator.LocalConfigPath() }
-func (Locator) MainConfigPath() (string, error)  { return locator.MainConfigPath() }
+func (Locator) MainConfigPath() (string, error)  { return locator.MainConfigPath(OS{}) }
 
 type OS struct{}
 
-func (OS) Getwd() (string, error) { return os.Getwd() }
+func (OS) Getwd() (string, error)                { return os.Getwd() }
+func (OS) Stat(name string) (os.FileInfo, error) { return os.Stat(name) }
+func (OS) UserConfigDir() (string, error)        { return os.UserConfigDir() }
+func (OS) LookupEnv(key string) (string, bool)   { return os.LookupEnv(key) }
 
 type Loader[T any] struct {
 	loadFunc func(string) (T, error)

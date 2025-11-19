@@ -6,8 +6,14 @@ import (
 	"path/filepath"
 )
 
-func MainConfigPath() (string, error) {
-	dir, err := getMainConfigDir()
+type MainOS interface {
+	Stat(name string) (os.FileInfo, error)
+	UserConfigDir() (string, error)
+	LookupEnv(key string) (string, bool)
+}
+
+func MainConfigPath(os MainOS) (string, error) {
+	dir, err := getMainConfigDir(os)
 	if err != nil {
 		return "", err
 	}
@@ -24,7 +30,7 @@ func MainConfigPath() (string, error) {
 	return "", fmt.Errorf("could not find a main config file")
 }
 
-func getMainConfigDir() (string, error) {
+func getMainConfigDir(os MainOS) (string, error) {
 	if dir, found := os.LookupEnv("GAMON3_CONFIG_DIR"); found {
 		return dir, nil
 	}
