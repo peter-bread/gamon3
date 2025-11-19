@@ -6,7 +6,13 @@ import (
 	"path/filepath"
 )
 
-func LocalConfigPath() (string, error) {
+type LocalOS interface {
+	Stat(name string) (os.FileInfo, error)
+	Getwd() (dir string, err error)
+	UserHomeDir() (string, error)
+}
+
+func LocalConfigPath(os LocalOS) (string, error) {
 	start, err := os.Getwd()
 	if err != nil {
 		return "", err
@@ -17,8 +23,13 @@ func LocalConfigPath() (string, error) {
 		return "", err
 	}
 
-	dir := start
 	candidates := []string{".gamon3.yaml", ".gamon3.yml"}
+
+	return searchUpward(os, start, stop, candidates)
+}
+
+func searchUpward(os LocalOS, start string, stop string, candidates []string) (string, error) {
+	dir := start
 
 	for {
 		for _, name := range candidates {
@@ -29,13 +40,11 @@ func LocalConfigPath() (string, error) {
 		}
 
 		parent := filepath.Dir(dir)
-
 		if dir == stop || parent == dir {
 			break
 		}
-
 		dir = parent
 	}
 
-	return "", fmt.Errorf("could not find a local config file starting from %q", start)
+	return "", fmt.Errorf("could not find any of %v starting from %q", candidates, start)
 }
