@@ -1,12 +1,16 @@
 package locator
 
 import (
-	"os"
 	"path/filepath"
 )
 
-func GhHostsPath() (string, error) {
-	dir, err := getGhConfigDir()
+type GhOS interface {
+	LookupEnv(key string) (string, bool)
+	UserConfigDir() (string, error)
+}
+
+func GhHostsPath(os GhOS) (string, error) {
+	dir, err := getGhConfigDir(os)
 	if err != nil {
 		return "", err
 	}
@@ -14,7 +18,7 @@ func GhHostsPath() (string, error) {
 	return filepath.Join(dir, "hosts.yml"), nil
 }
 
-func getGhConfigDir() (string, error) {
+func getGhConfigDir(os GhOS) (string, error) {
 	if dir, found := os.LookupEnv("GH_CONFIG_DIR"); found {
 		return dir, nil
 	}

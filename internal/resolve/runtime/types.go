@@ -12,7 +12,7 @@ import (
 
 type Locator struct{}
 
-func (Locator) GhHostsPath() (string, error)     { return locator.GhHostsPath() }
+func (Locator) GhHostsPath() (string, error)     { return locator.GhHostsPath(OS{}) }
 func (Locator) EnvAccount() (string, bool)       { return locator.EnvAccount() }
 func (Locator) LocalConfigPath() (string, error) { return locator.LocalConfigPath(OS{}) }
 func (Locator) MainConfigPath() (string, error)  { return locator.MainConfigPath(OS{}) }
