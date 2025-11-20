@@ -32,12 +32,6 @@ var (
 	date    = "unknown"
 )
 
-// func init() {
-// 	resolver := runtime.NewResolver()
-// 	fmt.Println(resolver.Resolve())
-// 	os.Exit(0)
-// }
-
 func main() {
 	cmd.SetVersion(version, commit, date)
 	cmd.Execute()
