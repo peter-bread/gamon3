@@ -527,7 +527,6 @@ func TestResolve(t *testing.T) {
 				SourceValue: "path/to/main/config",
 			},
 		},
-		// TODO: Possibly more, but I think I've got most cases covered.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
