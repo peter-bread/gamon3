@@ -23,7 +23,7 @@ func LocalConfigPath(os LocalOS) (string, error) {
 		return "", err
 	}
 
-	candidates := []string{".gamon3.yaml", ".gamon3.yml"}
+	candidates := []string{".gamon.yaml", ".gamon.yml", ".gamon3.yaml", ".gamon3.yml"}
 
 	return searchUpward(os, start, stop, candidates)
 }

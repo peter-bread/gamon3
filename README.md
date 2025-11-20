@@ -180,7 +180,7 @@ account.
 
 The default configuration file can be overridden in two ways:
 
-- a local `.gamon.yaml` config file, or
+- a local `.gamon.yaml` or `.gamon3.yaml` config file (`.yaml` or `.yml`), or
 - the `GAMON3_ACCOUNT` environment variable.
 
 These overrides are useful if projects are not always organised by GitHub
@@ -189,7 +189,7 @@ account.
 #### Local Config File
 
 Gamon3 will search (inclusively) upward from `$PWD` to `$HOME` for a file
-called `.gamon.yaml` or `.gamon.yml`. This file should contain a single
+called `.gamon.yaml` or `.gamon3.yaml`. This file should contain a single
 `account` key with a `value` being the GitHub account to use.
 
 E.g.
@@ -202,8 +202,8 @@ account: some-account
 #### Environment Variable
 
 Gamon3 will check to see if the `GAMON3_ACCOUNT` environment variable has been
-set to a valid GitHub account. If it has, this will override both `.gamon.yaml`
-and `config.yaml`.
+set to a valid GitHub account. If it has, this will override both a local
+`.gamon3.yaml` and the main `config.yaml`.
 
 ## See Also
 
