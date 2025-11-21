@@ -1,3 +1,4 @@
+// Package validate provides functions to validate Gamon3 config files.
 package validate
 
 import (
@@ -7,6 +8,7 @@ import (
 	"github.com/peter-bread/gamon3/internal/config"
 )
 
+// ValidateMainConfig validates a main config and reports any errors.
 func ValidateMainConfig(cfg *config.MainConfig, ghHosts []string) []error {
 	var errs []error
 
@@ -25,6 +27,7 @@ func ValidateMainConfig(cfg *config.MainConfig, ghHosts []string) []error {
 	return errs
 }
 
+// ValidateLocalConfig validates a local config and reports any errors.
 func ValidateLocalConfig(cfg *config.LocalConfig, ghHosts []string) error {
 	if cfg.Account == "" {
 		return fmt.Errorf("default account is required")
