@@ -1,6 +1,6 @@
-package executor
+package authswitch
 
-type Executor interface {
+type Switcher interface {
 	Switch(account string) error
 	SwitchIfNeeded(account, current string) error
 }
