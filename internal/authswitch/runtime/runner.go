@@ -8,6 +8,7 @@ import (
 
 type Runner struct{}
 
+// Run runs a command and returns stderr output and error exit code.
 func (r Runner) Run(name string, args ...string) (string, error) {
 	cmd := exec.Command(name, args...)
 
