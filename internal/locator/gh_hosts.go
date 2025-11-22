@@ -1,14 +1,14 @@
 package locator
 
-import (
-	"path/filepath"
-)
+import "path/filepath"
 
 type GhOS interface {
 	LookupEnv(key string) (string, bool)
 	UserConfigDir() (string, error)
 }
 
+// GhHostsPath returns the path to the GitHub CLI hosts.yml file if it exists,
+// otherwise it returns an error.
 func GhHostsPath(os GhOS) (string, error) {
 	dir, err := getGhConfigDir(os)
 	if err != nil {

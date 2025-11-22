@@ -1,3 +1,5 @@
+// Package locator provides functions and interfaces to locate configuration
+// sources and GitHub CLI config files.
 package locator
 
 import (
@@ -12,6 +14,18 @@ type MainOS interface {
 	LookupEnv(key string) (string, bool)
 }
 
+// MainConfigPath returns the path to a main config file for Gamon3. First it establishes
+// which directory it should look inside. The first of the following to exist is used:
+//   - $GAMON3_CONFIG_DIR
+//   - $XDG_CONFIG_HOME/gamon3
+//   - $HOME/.config/gamon3
+//
+// If a directory is found, it will look for a file called either config.yaml or config.yml.
+// If one of these files exists, then the path to it is returned.
+//
+// If a file does not exist, the function will return an error. This also means that if
+// $GAMON3_CONFIG_DIR is set to /foo/bar and does not contain a config.yaml, but an actual
+// config file exists in $HOME/.config/gamon3, it will not be found.
 func MainConfigPath(os MainOS) (string, error) {
 	dir, err := getMainConfigDir(os)
 	if err != nil {

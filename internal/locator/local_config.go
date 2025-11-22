@@ -12,6 +12,11 @@ type LocalOS interface {
 	UserHomeDir() (string, error)
 }
 
+// LocalConfigPath searches upwards from the current directory, looking for a local config file.
+// This file can be any one of: .gamon.yaml, .gamon.yml, .gamon3.yaml, or .gamon3.yml.
+// In most cases, the search will stop after checking the user's home directory. If the directory
+// where the search is starting is not a descendant of the home directory, then the search will go
+// all the way to the filesystem root.
 func LocalConfigPath(os LocalOS) (string, error) {
 	start, err := os.Getwd()
 	if err != nil {
