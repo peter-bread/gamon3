@@ -43,7 +43,7 @@ the correct account.
 
 There are three methods used to determine which account should be used:
 1. $GAMON3_ACCOUNT environment variable
-2. Checking '.gamon.yaml' or '.gamon.yml' local config file
+2. Checking '.gamon.yaml' or '.gamon3.yaml' local config file
 3. Main user config file 'config.yaml'
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
