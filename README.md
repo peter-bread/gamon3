@@ -176,6 +176,11 @@ accounts:
 This config file is especially useful if projects are organised by GitHub
 account.
 
+> [!NOTE]
+>
+> You do not need to specify the `default` account in `accounts`, as it will
+> always be a fallback option.
+
 ### Overrides
 
 The default configuration file can be overridden in two ways:
@@ -190,7 +195,9 @@ account.
 
 Gamon3 will search (inclusively) upward from `$PWD` to `$HOME` for a file
 called `.gamon.yaml` or `.gamon3.yaml`. This file should contain a single
-`account` key with a `value` being the GitHub account to use.
+`account` key with a `value` being the GitHub account to use. If `$PWD` is
+not a descendant of `$HOME`, the search will continue until the filesystem
+root (on Linux and MacOS this is `/`).
 
 E.g.
 
