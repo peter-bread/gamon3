@@ -20,19 +20,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package authswitch
 
-import (
-	"github.com/peter-bread/gamon3/cmd"
-)
+// Switcher is the interface that wraps methods that attempt to switch the active
+// GitHub CLI account.
+type Switcher interface {
+	Switch(account string) error
+	SwitchIfNeeded(account, current string) error
+}
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
-
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+// Runner is the interface that wraps the Run method, which should be used
+// to run external programs.
+type Runner interface {
+	Run(name string, args ...string) (stderr string, err error)
 }

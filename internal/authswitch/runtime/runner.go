@@ -20,19 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package runtime
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"bytes"
+	"io"
+	"os/exec"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+type Runner struct{}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+// Run runs a command and returns stderr output and error exit code.
+func (r Runner) Run(name string, args ...string) (string, error) {
+	cmd := exec.Command(name, args...)
+
+	var stderr bytes.Buffer
+	cmd.Stdout = io.Discard
+	cmd.Stderr = &stderr
+
+	err := cmd.Run()
+	return stderr.String(), err
 }

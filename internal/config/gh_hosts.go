@@ -20,19 +20,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package config
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"os"
+
+	"github.com/goccy/go-yaml"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+// GhHosts is a structure that represents a subset of a GH CLI `hosts.yml`
+// file.
+type GhHosts struct {
+	GitHubCom struct {
+		Users map[string]any `yaml:"users"`
+		User  string         `yaml:"user"`
+	} `yaml:"github.com"`
+}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+// LoadGhHosts attempts to read data from a YAML file at `path` and returns
+// a new `GhHosts` structure.
+func LoadGhHosts(path string) (*GhHosts, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	var hosts GhHosts
+	return &hosts, yaml.Unmarshal(data, &hosts)
+}
+
+// CurrentUser returns the current GH CLI user.
+func (g *GhHosts) CurrentUser() string {
+	return g.GitHubCom.User
+}
+
+// AllUsers returns a list of all authenticated GH CLI users.
+func (g *GhHosts) AllUsers() []string {
+	users := make([]string, 0, len(g.GitHubCom.Users))
+	for user := range g.GitHubCom.Users {
+		users = append(users, user)
+	}
+	return users
 }

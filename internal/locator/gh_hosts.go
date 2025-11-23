@@ -20,19 +20,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package locator
 
-import (
-	"github.com/peter-bread/gamon3/cmd"
-)
+import "path/filepath"
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+type GhOS interface {
+	LookupEnv(key string) (string, bool)
+	UserConfigDir() (string, error)
+}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+// GhHostsPath returns the path to the GitHub CLI hosts.yml file if it exists,
+// otherwise it returns an error.
+func GhHostsPath(os GhOS) (string, error) {
+	dir, err := getGhConfigDir(os)
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(dir, "hosts.yml"), nil
+}
+
+func getGhConfigDir(os GhOS) (string, error) {
+	if dir, found := os.LookupEnv("GH_CONFIG_DIR"); found {
+		return dir, nil
+	}
+
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(dir, "gh"), nil
 }

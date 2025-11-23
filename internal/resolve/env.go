@@ -20,19 +20,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package resolve
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"fmt"
+
+	"github.com/peter-bread/gamon3/internal/data"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+func resolveEnv(account string, gh GhHosts) (Result, error) {
+	if account == "" {
+		return Result{}, fmt.Errorf("env account cannot be empty")
+	}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+	if !isValidGitHubAccount(account, gh) {
+		return Result{}, fmt.Errorf("env account %q is not authenticated", account)
+	}
+
+	return Result{
+		Current:     gh.CurrentUser(),
+		Account:     account,
+		SourceKind:  Env,
+		SourceValue: data.EnvVarAccount,
+	}, nil
 }

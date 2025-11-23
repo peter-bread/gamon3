@@ -20,19 +20,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package locator
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"github.com/peter-bread/gamon3/internal/data"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+type EnvOS interface {
+	LookupEnv(key string) (string, bool)
+}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+// EnvAccount checks if the $GAMON3_ACCOUNT environment variable is set.
+// If set, return its value and true, otherwise return an empty string and
+// false.
+func EnvAccount(os EnvOS) (string, bool) {
+	return os.LookupEnv(data.EnvVarAccount)
 }

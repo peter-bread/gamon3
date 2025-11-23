@@ -1,4 +1,4 @@
-.PHONY: build clean install goreleaser
+.PHONY: build test cover clean install goreleaser
 
 BUILD_DIR = build
 
@@ -8,6 +8,12 @@ LDFLAGS		?= -X main.version=$(VERSION)
 build:
 	mkdir -p $(BUILD_DIR)
 	go build -o $(BUILD_DIR) -v -ldflags "$(LDFLAGS)"
+
+test:
+	go test -v ./...
+
+cover:
+	go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out
 	
 clean:
 	go clean

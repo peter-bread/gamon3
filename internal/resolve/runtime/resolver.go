@@ -20,19 +20,31 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+// Package runtime provides concrete implementations of the interfaces defined
+// in the parent package.
+package runtime
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"github.com/peter-bread/gamon3/internal/config"
+	"github.com/peter-bread/gamon3/internal/resolve"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+func NewResolver() *Resolver {
+	return &Resolver{
+		locator:     Locator{},
+		ghLoader:    NewGhHostsLoader(config.LoadGhHosts),
+		localLoader: NewLocalConfigLoader(config.LoadLocalConfig),
+		mainLoader:  NewMainConfigLoader(config.LoadMainConfig),
+		os:          OS{},
+	}
+}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+func (r *Resolver) Resolve() (resolve.Result, error) {
+	return resolve.Resolve(
+		r.locator,
+		r.ghLoader,
+		r.localLoader,
+		r.mainLoader,
+		r.os,
+	)
 }

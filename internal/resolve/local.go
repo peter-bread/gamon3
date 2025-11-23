@@ -20,19 +20,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package resolve
 
-import (
-	"github.com/peter-bread/gamon3/cmd"
-)
+import "fmt"
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+func resolveLocal(path string, gh GhHosts, loader LocalConfigLoader) (Result, error) {
+	cfg, err := loader.Load(path)
+	if err != nil {
+		return Result{}, err
+	}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+	account := cfg.Account
+
+	if account == "" {
+		return Result{}, fmt.Errorf("local config field 'account' cannot be empty")
+	}
+
+	if !isValidGitHubAccount(account, gh) {
+		return Result{}, fmt.Errorf("local config account %q is not authenticated", account)
+	}
+
+	return Result{
+		Current:     gh.CurrentUser(),
+		Account:     account,
+		SourceKind:  Local,
+		SourceValue: path,
+	}, nil
 }

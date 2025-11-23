@@ -176,11 +176,16 @@ accounts:
 This config file is especially useful if projects are organised by GitHub
 account.
 
+> [!NOTE]
+>
+> You do not need to specify the `default` account in `accounts`, as it will
+> always be a fallback option.
+
 ### Overrides
 
 The default configuration file can be overridden in two ways:
 
-- a local `.gamon.yaml` config file, or
+- a local `.gamon.yaml` or `.gamon3.yaml` config file (`.yaml` or `.yml`), or
 - the `GAMON3_ACCOUNT` environment variable.
 
 These overrides are useful if projects are not always organised by GitHub
@@ -189,8 +194,10 @@ account.
 #### Local Config File
 
 Gamon3 will search (inclusively) upward from `$PWD` to `$HOME` for a file
-called `.gamon.yaml` or `.gamon.yml`. This file should contain a single
-`account` key with a `value` being the GitHub account to use.
+called `.gamon.yaml` or `.gamon3.yaml`. This file should contain a single
+`account` key with a `value` being the GitHub account to use. If `$PWD` is
+not a descendant of `$HOME`, the search will continue until the filesystem
+root (on Linux and MacOS this is `/`).
 
 E.g.
 
@@ -202,12 +209,23 @@ account: some-account
 #### Environment Variable
 
 Gamon3 will check to see if the `GAMON3_ACCOUNT` environment variable has been
-set to a valid GitHub account. If it has, this will override both `.gamon.yaml`
-and `config.yaml`.
+set to a valid GitHub account. If it has, this will override both a local
+`.gamon3.yaml` and the main `config.yaml`.
+
+### Account Resolution and Errors
+
+Currently, Gamon3 will only report configuration errors if they affect the
+account you are trying to switch to. For example, if you have a completely
+invalid local config file, but the account is selected via an envionrment
+variable, the local config file will never be checked and thus no erros will be
+found.
+
+> [!NOTE]
+>
+> I plan to eventually add a `gamon3 doctor` command that will check all
+> discovered config files and report all problems. See [this
+> issue](https://github.com/peter-bread/gamon3/issues/22).
 
 ## See Also
 
 - [Homebrew Tap](https://github.com/peter-bread/homebrew-tap)
-
-<!--This is to fix my homebrew tap-->
-<!--This is to fix my homebrew tap-->

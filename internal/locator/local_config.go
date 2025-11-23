@@ -20,65 +20,45 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package gamon3cmd
+package locator
 
 import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"slices"
-
-	"github.com/goccy/go-yaml"
 )
 
-type LocalConfig struct {
-	Account string `yaml:"account"`
+type LocalOS interface {
+	Stat(name string) (os.FileInfo, error)
+	Getwd() (dir string, err error)
+	UserHomeDir() (string, error)
 }
 
-func (l *LocalConfig) Load(path string, allowedUsers []string) error {
-	data, err := os.ReadFile(path)
+// LocalConfigPath searches upwards from the current directory, looking for a local config file.
+// This file can be any one of: .gamon.yaml, .gamon.yml, .gamon3.yaml, or .gamon3.yml.
+// In most cases, the search will stop after checking the user's home directory. If the directory
+// where the search is starting is not a descendant of the home directory, then the search will go
+// all the way to the filesystem root.
+func LocalConfigPath(os LocalOS) (string, error) {
+	start, err := os.Getwd()
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	if err := yaml.Unmarshal(data, l); err != nil {
-		return err
+	stop, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
 	}
 
-	if err := l.Validate(allowedUsers); err != nil {
-		return err
-	}
+	candidates := []string{".gamon.yaml", ".gamon.yml", ".gamon3.yaml", ".gamon3.yml"}
 
-	return nil
+	return searchUpward(os, start, stop, candidates)
 }
 
-func (l *LocalConfig) Validate(allowedUsers []string) error {
-	if err := l.ValidateUsers(allowedUsers); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (l *LocalConfig) ValidateUsers(allowedUsers []string) error {
-	if l.Account == "" {
-		return fmt.Errorf("%s", "local config: 'account' field is required")
-	}
-
-	if !slices.Contains(allowedUsers, l.Account) {
-		return fmt.Errorf("%s: '%s' %s", "local config", l.Account, "has not been registered with GH CLI")
-	}
-
-	return nil
-}
-
-func GetLocalConfigPath() (string, error) {
-	start, _ := os.Getwd()
-	stop, _ := os.UserHomeDir()
+func searchUpward(os LocalOS, start string, stop string, candidates []string) (string, error) {
 	dir := start
-	candidates := []string{".gamon.yaml", ".gamon.yml"}
-	for {
 
+	for {
 		for _, name := range candidates {
 			candidate := filepath.Join(dir, name)
 			if _, err := os.Stat(candidate); err == nil {
@@ -87,11 +67,11 @@ func GetLocalConfigPath() (string, error) {
 		}
 
 		parent := filepath.Dir(dir)
-
 		if dir == stop || parent == dir {
-			return "", fmt.Errorf("%s", "Could not find a local config file")
+			break
 		}
-
 		dir = parent
 	}
+
+	return "", fmt.Errorf("could not find any of %v starting from %q", candidates, start)
 }

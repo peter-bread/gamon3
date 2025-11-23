@@ -20,19 +20,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package matcher
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+func normalise(path string) string {
+	if path == "" {
+		return path
+	}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+	if path == "~" {
+		if home, err := os.UserHomeDir(); err == nil {
+			return home
+		}
+	}
+
+	if strings.HasPrefix(path, "~/") {
+		if home, err := os.UserHomeDir(); err == nil {
+			path = filepath.Join(home, path[2:])
+		}
+	}
+
+	return filepath.Clean(os.ExpandEnv(path))
 }

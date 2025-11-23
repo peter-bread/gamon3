@@ -20,19 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+// Package data stores information needed across this project.
+package data
 
-import (
-	"github.com/peter-bread/gamon3/cmd"
-)
-
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
-
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
-}
+// EnvVarAccount represents the name of enviornment variable that can be used
+// to set the desired GitHub account.
+const EnvVarAccount = "GAMON3_ACCOUNT"

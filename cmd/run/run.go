@@ -26,12 +26,8 @@ THE SOFTWARE.
 package run
 
 import (
-	"fmt"
-	"os"
-	"os/exec"
-
-	"github.com/peter-bread/gamon3/internal/gamon3cmd"
-
+	authswitch "github.com/peter-bread/gamon3/internal/authswitch/runtime"
+	resolve "github.com/peter-bread/gamon3/internal/resolve/runtime"
 	"github.com/spf13/cobra"
 )
 
@@ -47,23 +43,20 @@ the correct account.
 
 There are three methods used to determine which account should be used:
 1. $GAMON3_ACCOUNT environment variable
-2. Checking '.gamon.yaml' or '.gamon.yml' local config file
+2. Checking '.gamon.yaml' or '.gamon3.yaml' local config file
 3. Main user config file 'config.yaml'
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		currentAccount, account, _, err := gamon3cmd.Resolve()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		resolver := resolve.NewResolver()
+
+		result, err := resolver.Resolve()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
 
-		switchIfNeeded(account, currentAccount)
-	},
-}
+		switcher := authswitch.NewSwitcher()
+		err = switcher.SwitchIfNeeded(result.Account, result.Current)
 
-func switchIfNeeded(account, currentAccount string) {
-	if account != currentAccount {
-		// TODO: Handle error.
-		exec.Command("gh", "auth", "switch", "--user", account).Run()
-	}
+		return err
+	},
 }

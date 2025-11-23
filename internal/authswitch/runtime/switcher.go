@@ -20,19 +20,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+// Package runtime provides concrete implementations of the interfaces defined
+// in the parent package.
+package runtime
 
-import (
-	"github.com/peter-bread/gamon3/cmd"
-)
+import "github.com/peter-bread/gamon3/internal/authswitch"
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+type Switcher struct {
+	runner authswitch.Runner
+}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+// NewSwitcher returns a new instance of Switcher with a command Runner.
+func NewSwitcher() *Switcher {
+	return &Switcher{
+		runner: Runner{},
+	}
+}
+
+// Switch calls `gh auth switch --user <account>`.
+func (s *Switcher) Switch(account string) error {
+	return authswitch.Switch(s.runner, account)
+}
+
+// SwitchIfNeeded calls Switch only if the current account differs from the account that should
+// be active.
+func (s *Switcher) SwitchIfNeeded(account, current string) error {
+	return authswitch.SwitchIfNeeded(s.runner, account, current)
 }

@@ -20,19 +20,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package resolve
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"fmt"
+
+	"github.com/peter-bread/gamon3/internal/matcher"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+func resolveMain(path string, gh GhHosts, loader MainConfigLoader, os OS) (Result, error) {
+	cfg, err := loader.Load(path)
+	if err != nil {
+		return Result{}, err
+	}
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+	cwd, err := os.Getwd()
+	if err != nil {
+		return Result{}, err
+	}
+
+	// This is the account that should be used based on the current directory.
+	account, err := matcher.MatchAccount(cwd, cfg.Accounts, cfg.Default)
+	if err != nil {
+		return Result{}, fmt.Errorf("main config %s", err)
+	}
+
+	if !isValidGitHubAccount(account, gh) {
+		return Result{}, fmt.Errorf("main config account %q is not authenticated", account)
+	}
+
+	return Result{
+		Current:     gh.CurrentUser(),
+		Account:     account,
+		SourceKind:  Main,
+		SourceValue: path,
+	}, nil
 }

@@ -25,14 +25,13 @@ package source
 
 import (
 	"fmt"
-	"os"
 
-	"github.com/peter-bread/gamon3/internal/gamon3cmd"
+	"github.com/peter-bread/gamon3/internal/resolve/runtime"
 
 	"github.com/spf13/cobra"
 )
 
-// SourceCmd represents the run command.
+// SourceCmd represents the source command.
 var SourceCmd = &cobra.Command{
 	Use:   "source",
 	Short: "Prints source of current acount",
@@ -41,18 +40,27 @@ var SourceCmd = &cobra.Command{
 Prints which GH CLI account should be active and which method was used
 to resolve this.
 
+If account resolution is successful, the output has the following format:
+  <account> <source kind> <source value>
+
+If account resolution is unsuccessful, an error message will be printed and
+the program will exit with a non-zero exit code.
+
 There are three methods used to determine which account should be used:
 1. $GAMON3_ACCOUNT environment variable
-2. Checking '.gamon.yaml' or '.gamon.yml' local config file
+2. Checking '.gamon.yaml' or '.gamon3.yaml' local config file
 3. Main user config file 'config.yaml'
 `,
-	Run: func(cmd *cobra.Command, args []string) {
-		_, _, source, err := gamon3cmd.Resolve()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		resolver := runtime.NewResolver()
+
+		result, err := resolver.Resolve()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
 
-		fmt.Println(source)
+		_, err = fmt.Println(result.Account, result.SourceKind, result.SourceValue)
+
+		return err
 	},
 }

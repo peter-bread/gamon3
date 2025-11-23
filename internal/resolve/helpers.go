@@ -20,19 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package resolve
 
-import (
-	"github.com/peter-bread/gamon3/cmd"
-)
+import "slices"
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
-
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+func isValidGitHubAccount(account string, gh GhHosts) bool {
+	return slices.Contains(gh.AllUsers(), account)
 }

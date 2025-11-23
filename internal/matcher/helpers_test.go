@@ -20,19 +20,44 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+package matcher
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"os"
+	"testing"
 )
 
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
-)
+func Test_normalise(t *testing.T) {
+	home, _ := os.UserHomeDir()
 
-func main() {
-	cmd.SetVersion(version, commit, date)
-	cmd.Execute()
+	tests := []struct {
+		name string // description of this test case
+		// Named input parameters for target function.
+		path string
+		want string
+	}{
+		{
+			name: "handle empty path",
+			path: "",
+			want: "",
+		},
+		{
+			name: "handle path being ~",
+			path: "~",
+			want: home,
+		},
+		{
+			name: "handle path being $HOME",
+			path: "$HOME",
+			want: home,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := normalise(tt.path)
+			if got != tt.want {
+				t.Errorf("normalise() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

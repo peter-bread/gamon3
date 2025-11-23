@@ -20,59 +20,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package gamon3cmd
+// Package config defines functions that read YAML files into corresponding
+// structures.
+package config
 
 import (
 	"os"
-	"path/filepath"
 
 	"github.com/goccy/go-yaml"
 )
 
-type GHHosts struct {
-	GitHubCom struct {
-		Users map[string]any `yaml:"users"`
-		User  string         `yaml:"user"`
-	} `yaml:"github.com"`
+// MainConfig is a structure that stores data from the main configuration file.
+type MainConfig struct {
+	Default  string              `yaml:"default"`
+	Accounts map[string][]string `yaml:"accounts"`
 }
 
-func (g *GHHosts) Load(path string) error {
+// LoadMainConfig attempts to read data from a YAML file at `path` and returns
+// a new `MainConfig` structure.
+func LoadMainConfig(path string) (*MainConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	if err := yaml.Unmarshal(data, g); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (g *GHHosts) GetCurrentUser() string {
-	return g.GitHubCom.User
-}
-
-func (g *GHHosts) GetAllUsers() []string {
-	users := make([]string, 0, len(g.GitHubCom.Users))
-	for user := range g.GitHubCom.Users {
-		users = append(users, user)
-	}
-	return users
-}
-
-func GetGHHostsPath() (string, error) {
-	if configDir, found := os.LookupEnv("GH_CONFIG_DIR"); found {
-		return filepath.Join(configDir, "hosts.yml"), nil
-	}
-
-	if xdgConfigDir, found := os.LookupEnv("XDG_CONFIG_HOME"); found {
-		return filepath.Join(xdgConfigDir, "gh", "hosts.yml"), nil
-	}
-
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-
-	return filepath.Join(homeDir, ".config", "gh", "hosts.yml"), nil
+	var cfg MainConfig
+	return &cfg, yaml.Unmarshal(data, &cfg)
 }
