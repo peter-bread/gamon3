@@ -27,8 +27,6 @@ THE SOFTWARE.
 package hook
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -39,9 +37,8 @@ var HookCmd = &cobra.Command{
 	Long: `Prints the shell function used to execute 'gamon3 run' on cd.
 
 This should be evaluated in your shell rc file.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-		os.Exit(1)
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return cmd.Help()
 	},
 }
 
