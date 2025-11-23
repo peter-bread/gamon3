@@ -30,18 +30,6 @@ import (
 	"github.com/peter-bread/gamon3/internal/matcher"
 )
 
-type mockFP struct {
-	AbsPath  string
-	AbsError error
-}
-
-func (m mockFP) Abs(path string) (string, error) {
-	if m.AbsError != nil {
-		return "", m.AbsError
-	}
-	return m.AbsPath, nil
-}
-
 func TestMatchAccount(t *testing.T) {
 	home, _ := os.UserHomeDir()
 
