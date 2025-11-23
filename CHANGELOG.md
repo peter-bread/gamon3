@@ -1,3 +1,52 @@
+## [2.0.0](https://github.com/peter-bread/gamon3/compare/v1.1.3...v2.0.0) (2025-11-23)
+
+### ⚠ BREAKING CHANGES
+
+* remove outdated `gamon3cmd` internal package
+* **source:** config resolution logic has changed slightly
+* **source:** return error
+* **source:** source now outputs information in a different format.
+It is less descriptive and less verbose, but it gets the information
+across quickly and is easier to manipulate with tools like `awk`.
+
+### Features
+
+* **config:** adds config package. ([390b402](https://github.com/peter-bread/gamon3/commit/390b4021aa73b34228146d506efcf9d472ba7ba0))
+* **config:** support `.gamon.yaml` and `.gamon3.yaml` local configs ([5cdff5f](https://github.com/peter-bread/gamon3/commit/5cdff5f11ceaccc27d0c283425f196ca3ef123c3))
+* **locator:** check for `.yaml` and `.yml` for main config file ([3703cbf](https://github.com/peter-bread/gamon3/commit/3703cbf1759bd2733e5b82be5e493712268624eb))
+* **locator:** handle errors when searching for local config ([bde25e9](https://github.com/peter-bread/gamon3/commit/bde25e9a6fcb75e9ee920d173ff70a5aca25ad60))
+* **matcher:** adds function and tests for matching path to account ([29e1287](https://github.com/peter-bread/gamon3/commit/29e12878b08849bc16e2c0f4bb56aea6af44300a))
+* **resolve:** adds `runtime` subpackage ([a1618df](https://github.com/peter-bread/gamon3/commit/a1618df096d9ce05dfdd2581b540d00b6d3d1373))
+* **source:** migrate `run` command to refactored packages ([6b48ae7](https://github.com/peter-bread/gamon3/commit/6b48ae7eb0cf3adbc1ba168788793d46b800a7cb))
+* **source:** migrate `source` command to refactored packages ([b29f3bf](https://github.com/peter-bread/gamon3/commit/b29f3bf1021f29a7ef6368b3843e944b6930e796))
+* **source:** return error ([bf6e374](https://github.com/peter-bread/gamon3/commit/bf6e37413d5ef1a7e53023ada7b3b081b9437f32))
+* **source:** update help info ([3a58d08](https://github.com/peter-bread/gamon3/commit/3a58d085e0c83ce30584ab28e36288c70aea11d9))
+* **validate:** adds function and test to validate main config ([7475227](https://github.com/peter-bread/gamon3/commit/74752276cd530a1e606ecf881ce00f10f0cfffb2))
+* **validate:** adds validation for local config ([3554263](https://github.com/peter-bread/gamon3/commit/35542636fd08098e54906c7d63da9e2fa16d7d57))
+
+### Bug Fixes
+
+* **hook:** handle `cmd.Help` error ([8da5b6a](https://github.com/peter-bread/gamon3/commit/8da5b6a334420c30b967a24dfb63d3ead2763f34))
+* **validate:** fixes typo in error message ([5ee783c](https://github.com/peter-bread/gamon3/commit/5ee783cbf28951190ec27e72dc1d71fd76207ba7))
+
+### Documentation
+
+* **README:** adds information about config error reporting ([591fd1d](https://github.com/peter-bread/gamon3/commit/591fd1d45c1811d40113aa0cfcea2df93fca5b3a))
+* **README:** fixes typo ([893b362](https://github.com/peter-bread/gamon3/commit/893b36213f1e7867b46f41c121ddbecd96d10b07))
+* **README:** small updates ([1e07717](https://github.com/peter-bread/gamon3/commit/1e077174127415efbdca1bebe0ba4cbbcccf4ea2))
+
+### Other
+
+* **config:** use `slices.Equal` to compare lists of strings ([3032680](https://github.com/peter-bread/gamon3/commit/3032680562f6e3a4a8b219e0fcefd4484244e5fe))
+* **executor:** use dependency injection to make `Switch` testable ([c79d0fb](https://github.com/peter-bread/gamon3/commit/c79d0fb5f6962ec2de65e47bafd3deb0097d11db))
+* **matcher:** handle `Getwd` in `resolveMain` ([8c128ae](https://github.com/peter-bread/gamon3/commit/8c128ae0b9c74889752c98256b7dae137dbe8cd7))
+* **matcher:** use interface to get absolute path ([b806039](https://github.com/peter-bread/gamon3/commit/b806039d0b693ec3cf0c55c77c9f54dd60e42edc))
+* remove outdated `gamon3cmd` internal package ([a3ad462](https://github.com/peter-bread/gamon3/commit/a3ad46265e58d0440411b3d9efc5309b2f2ce423))
+* **resolve:** define mock structs in their own file ([9319e1a](https://github.com/peter-bread/gamon3/commit/9319e1ab23e786af291fc7bdd6b57f1c2a644c3d))
+* **resolve:** define mock structs in their own file (white-box) ([7c2bab4](https://github.com/peter-bread/gamon3/commit/7c2bab4f588be569ff81b4dc4004a326b074dae3))
+* **resolve:** do not export internal functions ([988e38c](https://github.com/peter-bread/gamon3/commit/988e38c763a046d4e219bb71a4880e35043fd4c1))
+* **switch:** make account switching testable and easier to use ([9b7e9db](https://github.com/peter-bread/gamon3/commit/9b7e9db243c6d2360c9fa12662cbf2edbf35cdd6))
+
 ## [1.1.3](https://github.com/peter-bread/gamon3/compare/v1.1.2...v1.1.3) (2025-10-23)
 
 ### Bug Fixes
