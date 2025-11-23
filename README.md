@@ -212,6 +212,20 @@ Gamon3 will check to see if the `GAMON3_ACCOUNT` environment variable has been
 set to a valid GitHub account. If it has, this will override both a local
 `.gamon3.yaml` and the main `config.yaml`.
 
+### Account Resolution and Errors
+
+Currently, Gamon3 will only report configuration errors if they affect the
+account you are trying to switch to. For example, if you have a completely
+invalid local config file, but the account is selected via an envionrment
+variable, the local config file will never be checked and thus no erros will be
+found.
+
+> [!NOTE]
+>
+> I plan to enventually add a `gamon3 doctor` command that will check all
+> discovered config files and report all problems. See [this
+> issue](https://github.com/peter-bread/gamon3/issues/22).
+
 ## See Also
 
 - [Homebrew Tap](https://github.com/peter-bread/homebrew-tap)
