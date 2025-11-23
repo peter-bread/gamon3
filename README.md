@@ -222,7 +222,7 @@ found.
 
 > [!NOTE]
 >
-> I plan to enventually add a `gamon3 doctor` command that will check all
+> I plan to eventually add a `gamon3 doctor` command that will check all
 > discovered config files and report all problems. See [this
 > issue](https://github.com/peter-bread/gamon3/issues/22).
 
