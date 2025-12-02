@@ -32,8 +32,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
+// RootCmd represents the base command when called without any subcommands
+var RootCmd = &cobra.Command{
 	Use:   "gamon3",
 	Short: "Automatic GH CLI account switching on cd",
 	Long: `Automatic GH CLI account switching on cd.
@@ -46,7 +46,7 @@ context, specifically 'pwd'. It does this by hooking into the 'cd' command.
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
-	err := rootCmd.Execute()
+	err := RootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -54,11 +54,11 @@ func Execute() {
 
 func SetVersion(version, commit, date string) {
 	// TODO: Use `commit` and `date` in version output (MAYBE).
-	rootCmd.Version = version
+	RootCmd.Version = version
 }
 
 func init() {
-	rootCmd.AddCommand(run.RunCmd)
-	rootCmd.AddCommand(hook.HookCmd)
-	rootCmd.AddCommand(source.SourceCmd)
+	RootCmd.AddCommand(run.RunCmd)
+	RootCmd.AddCommand(hook.HookCmd)
+	RootCmd.AddCommand(source.SourceCmd)
 }
