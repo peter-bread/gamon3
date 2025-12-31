@@ -35,12 +35,11 @@ var zshCmd = &cobra.Command{
 	Long:  `Prints zsh function to hook on cd.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		script := `
-__gamon3_hook() {
+autoload -U add-zsh-hook
+
+add-zsh-hook chpwd function() {
 	gamon3 run
 }
-
-autoload -U add-zsh-hook
-add-zsh-hook chpwd __gamon3_hook
 `
 		fmt.Println(script)
 	},
