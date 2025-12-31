@@ -1,3 +1,13 @@
+## [2.0.2](https://github.com/peter-bread/gamon3/compare/v2.0.1...v2.0.2) (2025-12-31)
+
+### Bug Fixes
+
+* **mod:** bump module to v2 ([e8f920a](https://github.com/peter-bread/gamon3/commit/e8f920a545e81f76cb174d9fdbc989a3d829b388))
+
+### Documentation
+
+* **README:** update go install url ([9342541](https://github.com/peter-bread/gamon3/commit/934254105ff6512abb1055c10bebad91424db12c))
+
 ## [2.0.1](https://github.com/peter-bread/gamon3/compare/v2.0.0...v2.0.1) (2025-12-31)
 
 ### Other
