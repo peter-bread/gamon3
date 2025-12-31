@@ -1,4 +1,4 @@
-module github.com/peter-bread/gamon3
+module github.com/peter-bread/gamon3/v2
 
 go 1.25.0
 

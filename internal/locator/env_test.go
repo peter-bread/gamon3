@@ -26,8 +26,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/peter-bread/gamon3/internal/data"
-	"github.com/peter-bread/gamon3/internal/locator"
+	"github.com/peter-bread/gamon3/v2/internal/data"
+	"github.com/peter-bread/gamon3/v2/internal/locator"
 )
 
 type mockEnvOS struct {

@@ -26,7 +26,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/peter-bread/gamon3/internal/config"
+	"github.com/peter-bread/gamon3/v2/internal/config"
 )
 
 func TestLoadLocalConfig(t *testing.T) {

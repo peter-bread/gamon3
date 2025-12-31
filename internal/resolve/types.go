@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 package resolve
 
-import "github.com/peter-bread/gamon3/internal/config"
+import "github.com/peter-bread/gamon3/v2/internal/config"
 
 type SourceKind string
 

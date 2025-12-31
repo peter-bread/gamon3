@@ -25,7 +25,7 @@ package resolve
 import (
 	"fmt"
 
-	"github.com/peter-bread/gamon3/internal/data"
+	"github.com/peter-bread/gamon3/v2/internal/data"
 )
 
 func resolveEnv(account string, gh GhHosts) (Result, error) {

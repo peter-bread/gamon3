@@ -25,7 +25,7 @@ package resolve
 import (
 	"testing"
 
-	"github.com/peter-bread/gamon3/internal/data"
+	"github.com/peter-bread/gamon3/v2/internal/data"
 )
 
 func Test_resolveEnv(t *testing.T) {

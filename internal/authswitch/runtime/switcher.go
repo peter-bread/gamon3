@@ -24,7 +24,7 @@ THE SOFTWARE.
 // in the parent package.
 package runtime
 
-import "github.com/peter-bread/gamon3/internal/authswitch"
+import "github.com/peter-bread/gamon3/v2/internal/authswitch"
 
 type Switcher struct {
 	runner authswitch.Runner

@@ -25,7 +25,7 @@ package resolve
 import (
 	"fmt"
 
-	"github.com/peter-bread/gamon3/internal/matcher"
+	"github.com/peter-bread/gamon3/v2/internal/matcher"
 )
 
 func resolveMain(path string, gh GhHosts, loader MainConfigLoader, os OS) (Result, error) {

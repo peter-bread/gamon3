@@ -26,8 +26,8 @@ THE SOFTWARE.
 package run
 
 import (
-	authswitch "github.com/peter-bread/gamon3/internal/authswitch/runtime"
-	resolve "github.com/peter-bread/gamon3/internal/resolve/runtime"
+	authswitch "github.com/peter-bread/gamon3/v2/internal/authswitch/runtime"
+	resolve "github.com/peter-bread/gamon3/v2/internal/resolve/runtime"
 	"github.com/spf13/cobra"
 )
 

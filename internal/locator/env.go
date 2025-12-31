@@ -23,7 +23,7 @@ THE SOFTWARE.
 package locator
 
 import (
-	"github.com/peter-bread/gamon3/internal/data"
+	"github.com/peter-bread/gamon3/v2/internal/data"
 )
 
 type EnvOS interface {

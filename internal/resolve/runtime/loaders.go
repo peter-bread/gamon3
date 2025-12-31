@@ -23,8 +23,8 @@ THE SOFTWARE.
 package runtime
 
 import (
-	"github.com/peter-bread/gamon3/internal/config"
-	"github.com/peter-bread/gamon3/internal/resolve"
+	"github.com/peter-bread/gamon3/v2/internal/config"
+	"github.com/peter-bread/gamon3/v2/internal/resolve"
 )
 
 func NewGhHostsLoader(f func(string) (*config.GhHosts, error)) GhHostsLoader {

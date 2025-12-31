@@ -23,7 +23,7 @@ THE SOFTWARE.
 package main
 
 import (
-	"github.com/peter-bread/gamon3/cmd"
+	"github.com/peter-bread/gamon3/v2/cmd"
 )
 
 var (

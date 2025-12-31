@@ -27,9 +27,9 @@ package runtime
 import (
 	"os"
 
-	"github.com/peter-bread/gamon3/internal/config"
-	"github.com/peter-bread/gamon3/internal/locator"
-	"github.com/peter-bread/gamon3/internal/resolve"
+	"github.com/peter-bread/gamon3/v2/internal/config"
+	"github.com/peter-bread/gamon3/v2/internal/locator"
+	"github.com/peter-bread/gamon3/v2/internal/resolve"
 )
 
 type Locator struct{}

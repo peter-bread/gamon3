@@ -27,7 +27,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/peter-bread/gamon3/internal/matcher"
+	"github.com/peter-bread/gamon3/v2/internal/matcher"
 )
 
 func TestMatchAccount(t *testing.T) {

@@ -26,9 +26,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/peter-bread/gamon3/cmd/hook"
-	"github.com/peter-bread/gamon3/cmd/run"
-	"github.com/peter-bread/gamon3/cmd/source"
+	"github.com/peter-bread/gamon3/v2/cmd/hook"
+	"github.com/peter-bread/gamon3/v2/cmd/run"
+	"github.com/peter-bread/gamon3/v2/cmd/source"
 	"github.com/spf13/cobra"
 )
 

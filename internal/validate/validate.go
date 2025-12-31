@@ -27,7 +27,7 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/peter-bread/gamon3/internal/config"
+	"github.com/peter-bread/gamon3/v2/internal/config"
 )
 
 // ValidateMainConfig validates a main config and reports any errors.
