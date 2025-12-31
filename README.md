@@ -63,7 +63,7 @@ brew install peter-bread/tap/gamon3
 ### Go Install
 
 ```bash
-go install github.com/peter-bread/gamon3@latest
+go install github.com/peter-bread/gamon3/v2@latest
 ```
 
 ### Build From Source
