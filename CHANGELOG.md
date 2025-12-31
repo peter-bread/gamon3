@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/peter-bread/gamon3/compare/v2.0.0...v2.0.1) (2025-12-31)
+
+### Other
+
+* **hook:** use anonymous zsh function for chpwd hook ([2124060](https://github.com/peter-bread/gamon3/commit/2124060142c60b6e3efb9d3a0eff03c359e66726))
+* **hook:** use anonymous zsh function for chpwd hook ([#38](https://github.com/peter-bread/gamon3/issues/38)) ([b750c11](https://github.com/peter-bread/gamon3/commit/b750c1143a6f5602e57bb002a5213c2bbf27dfb4))
+
 ## [2.0.0](https://github.com/peter-bread/gamon3/compare/v1.1.3...v2.0.0) (2025-11-23)
 
 ### ⚠ BREAKING CHANGES
