@@ -1,13 +1,31 @@
 .PHONY: build test cover clean install goreleaser
 
-BUILD_DIR = build
+override VALID_BUILD_MODES := release debug
 
-VERSION  	?= $(shell git describe --tags --dirty --always)
-LDFLAGS		?= -X main.version=$(VERSION)
+# Release builds by default, must explicitly set BUILD_MODE=debug for dev builds.
+BUILD_MODE        ?= release
+
+ifneq ($(filter $(BUILD_MODE),$(VALID_BUILD_MODES)),$(BUILD_MODE))
+$(error Invalid BUILD_MODE '$(BUILD_MODE)'; must be one of: [$(VALID_BUILD_MODES)])
+endif
+
+BUILD_DIR       = build
+CGO_ENABLED     = 0
+
+LDFLAGS_COMMON :=
+GOFLAGS_COMMON := -v -buildvcs=true
+
+ifeq ($(BUILD_MODE), release)
+LDFLAGS := -s -w $(LDFLAGS_COMMON)
+GOFLAGS := -trimpath $(GOFLAGS_COMMON)
+else  ifeq ($(BUILD_MODE), debug)
+LDFLAGS := $(LDFLAGS_COMMON)
+GOFLAGS := $(GOFLAGS_COMMON)
+endif
 
 build:
 	mkdir -p $(BUILD_DIR)
-	go build -o $(BUILD_DIR) -v -ldflags "$(LDFLAGS)"
+	CGO_ENABLED=$(CGO_ENABLED) go build $(GOFLAGS) -o "$(BUILD_DIR)" -ldflags "$(LDFLAGS)"
 
 test:
 	go test -v ./...

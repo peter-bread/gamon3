@@ -23,16 +23,55 @@ THE SOFTWARE.
 package main
 
 import (
+	"runtime"
+	"runtime/debug"
+
 	"github.com/peter-bread/gamon3/v2/cmd"
 )
 
+// VCS build info. These should be set via debug.ReadBuildInfo.
 var (
 	version = "dev"
 	commit  = "none"
-	date    = "unknown"
+	date    = "unknown" // Specifically commit date, not build date. This is for reproducible builds.
 )
 
+func buildSettingsMap(info *debug.BuildInfo) map[string]string {
+	m := make(map[string]string)
+
+	for _, s := range info.Settings {
+		m[s.Key] = s.Value
+	}
+
+	return m
+}
+
+func init() {
+	var (
+		os   string
+		arch string
+	)
+
+	if info, ok := debug.ReadBuildInfo(); ok {
+		settings := buildSettingsMap(info)
+
+		os = settings["GOOS"]
+		arch = settings["GOARCH"]
+
+		if info.Main.Version != "(devel)" {
+			version = info.Main.Version
+			commit = settings["vcs.revision"]
+			date = settings["vcs.time"]
+		}
+
+	} else {
+		os = runtime.GOOS
+		arch = runtime.GOARCH
+	}
+
+	cmd.SetVersion(version, commit, date, os, arch)
+}
+
 func main() {
-	cmd.SetVersion(version, commit, date)
 	cmd.Execute()
 }

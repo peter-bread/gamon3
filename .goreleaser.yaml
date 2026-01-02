@@ -9,12 +9,21 @@ before:
   hooks:
     - go mod tidy
 
+gomod:
+  proxy: true
+
 builds:
   - env:
       - CGO_ENABLED=0
     goos:
       - darwin
       - linux
+    flags:
+      - -v
+      - -buildvcs=true
+      - -trimpath
+    ldflags:
+      - -s -w
 
 archives:
   - formats: [tar.gz]
