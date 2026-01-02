@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+
+# This script ensures that release builds from the Makefile are identical to
+# release builds from GoReleaser.
+
+set -e
+
+# Logging options.
+: "${ENABLE_COLOR:=1}" # 1 = colored output, 0 = plain
+DATE_FORMAT="%Y-%m-%d %H:%M:%S"
+
+# ANSI color codes.
+RESET="\e[0m"
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+BLUE="\e[34m"
+
+# Internal logging function.
+_log() {
+  local level="$1"
+  local msg="$2"
+  local color="$3"
+  local stream=${4:-1}
+  local timestamp
+  timestamp=$(date +"$DATE_FORMAT")
+
+  if [[ $ENABLE_COLOR -eq 1 && -n "$color" ]]; then
+    printf "%s ${color}[%-7s]${RESET} %s\n" "$timestamp" "$level" "$msg" >&"$stream"
+  else
+    printf "%s [%-7s] %s\n" "$timestamp" "$level" "$msg" >&"$stream"
+  fi
+}
+
+# Public logging functions.
+info() { _log "INFO" "$1" "$BLUE"; }
+warn() { _log "WARN" "$1" "$YELLOW" 2; }
+error() { _log "ERROR" "$1" "$RED" 2; }
+success() { _log "SUCCESS" "$1" "$GREEN"; }
+
+available() {
+  [[ -n "$1" ]] && command -v -- "$1" &>/dev/null
+}
+
+unavailable() {
+  ! available "$1"
+}
+
+check_files() {
+  local file1="$1"
+  local file2="$2"
+
+  local hash1
+  local hash2
+  hash1=$(sha256sum "$file1" | awk '{print $1}')
+  hash2=$(sha256sum "$file2" | awk '{print $1}')
+
+  if [ "$hash1" = "$hash2" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+goreleaser_path() {
+  local version
+  case $GOARCH in
+  arm64) version="8.0" ;;
+  amd64) version="1" ;;
+  *) exit 1 ;;
+  esac
+
+  echo "./dist/gamon3_${GOOS}_${GOARCH}_v${version}/gamon3"
+}
+
+verify() {
+  local goos=$1
+  local goarch=$2
+
+  (
+    export GOOS=$goos GOARCH=$goarch
+    info "Building for $GOOS-$GOARCH"
+    make BUILD_DIR="$TMP"
+    info "Verifying release build checksums for $GOOS-$GOARCH"
+    if ! check_files "$TMP"/gamon3 "$(goreleaser_path)"; then
+      error "Release build checksums did not match for $GOOS-$GOARCH"
+      return 1
+    fi
+    success "Release build checksums matched for $GOOS-$GOARCH"
+  )
+}
+
+info "Verifying Makefile release builds are the same as GoReleaser builds"
+
+if unavailable sha256sum; then
+  error "sha256sum is required"
+  exit 1
+fi
+
+info "Building GoReleaser snapshot"
+make goreleaser
+
+info "Building from Makefile and checking"
+
+TMP=$(mktemp -d)
+cleanup() { rm -rf "$TMP"; }
+trap cleanup EXIT
+
+export TMP
+
+verify darwin arm64
+verify darwin amd64
+verify linux arm64
+verify linux amd64
+
+success "All release build checksums match"
