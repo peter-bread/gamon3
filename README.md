@@ -68,7 +68,8 @@ go install github.com/peter-bread/gamon3/v2@latest
 
 ### Build From Source
 
-To build and install Gamon3 under the default prefix (`/usr/local`), run:
+To build and install a release version Gamon3 under the default prefix
+(`/usr/local`), run:
 
 ```bash
 git clone https://github.com/peter-bread/gamon3
@@ -81,6 +82,12 @@ To install under a custom prefix, e.g. `~/.local`, run:
 
 ```bash
 make install PREFIX=~/.local
+```
+
+If you wish to build with debug information, use
+
+```bash
+make BUILD_MODE=debug
 ```
 
 ## Usage
