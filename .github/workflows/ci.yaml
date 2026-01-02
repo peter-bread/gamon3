@@ -25,6 +25,9 @@ jobs:
       - name: Build
         run: make
 
+      - name: Check version
+        run: build/gamon3 -v
+
   test:
     runs-on: ubuntu-latest
 
