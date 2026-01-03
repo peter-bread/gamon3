@@ -1,3 +1,13 @@
+## [2.0.3](https://github.com/peter-bread/gamon3/compare/v2.0.2...v2.0.3) (2026-01-03)
+
+### Documentation
+
+* **README:** update build instructions ([52f95c6](https://github.com/peter-bread/gamon3/commit/52f95c6091559d0668b91ecbd04bfef604495aee))
+
+### Other
+
+* dedicated build module for establishing build info ([7eb9c5d](https://github.com/peter-bread/gamon3/commit/7eb9c5d2ecbe3a602fe67880cea24fa57a471f60))
+
 ## [2.0.2](https://github.com/peter-bread/gamon3/compare/v2.0.1...v2.0.2) (2025-12-31)
 
 ### Bug Fixes
