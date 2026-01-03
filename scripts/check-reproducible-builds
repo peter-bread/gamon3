@@ -38,13 +38,9 @@ warn() { _log "WARN" "$1" "$YELLOW" 2; }
 error() { _log "ERROR" "$1" "$RED" 2; }
 success() { _log "SUCCESS" "$1" "$GREEN"; }
 
-available() {
-  [[ -n "$1" ]] && command -v -- "$1" &>/dev/null
-}
+available() { [[ -n "$1" ]] && command -v -- "$1" &>/dev/null; }
 
-unavailable() {
-  ! available "$1"
-}
+unavailable() { ! available "$1"; }
 
 check_files() {
   local file1="$1"
@@ -58,6 +54,12 @@ check_files() {
   if [ "$hash1" = "$hash2" ]; then
     return 0
   else
+    # NOTE: Using '-trimpath' at build time hides '-ldflags' in 'go version -m'
+    # output.
+    warn "Makefile hash:   $hash1"
+    warn "GoReleaser hash: $hash2"
+    info "Printing diff between go version -m outputs"
+    diff <(go version -m "$file1") <(go version -m "$file2")
     return 1
   fi
 }
