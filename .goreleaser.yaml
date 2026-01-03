@@ -25,7 +25,7 @@ builds:
       - -trimpath
     ldflags:
       - -s -w
-      - -X main.Version={{.Env.GAMON3_VERSION}}
+      - -X github.com/peter-bread/gamon3/v2/internal/build.Version={{ .Env.GAMON3_VERSION }}
 
 archives:
   - formats: [tar.gz]

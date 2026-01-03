@@ -18,7 +18,7 @@ GAMON3_VERSION ?= $(shell git describe --tags --dirty --always)
 BIN            := bin
 CGO_ENABLED    := 0
 
-LDFLAGS_COMMON := -X main.Version=$(GAMON3_VERSION)
+LDFLAGS_COMMON := -X github.com/peter-bread/gamon3/v2/internal/build.Version=$(GAMON3_VERSION)
 GOFLAGS_COMMON := -v -buildvcs=auto
 
 ifeq ($(BUILD_MODE), release)
