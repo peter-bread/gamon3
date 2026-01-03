@@ -25,11 +25,10 @@ jobs:
       - name: Build
         run: make
 
-      - name: Print --version output
-        run: build/gamon3 -v
+      - run: bin/gamon3 -v
 
       - name: Print embedded module version information
-        run: go version -m build/gamon3
+        run: go version -m bin/gamon3
 
   test:
     runs-on: ubuntu-latest
