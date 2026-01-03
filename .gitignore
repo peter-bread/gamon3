@@ -34,6 +34,6 @@ go.work.sum
 # Added by goreleaser init:
 dist/
 
-build/
+bin/
 
 node_modules/

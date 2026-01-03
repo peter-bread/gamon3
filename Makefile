@@ -9,7 +9,7 @@ ifneq ($(filter $(BUILD_MODE),$(VALID_BUILD_MODES)),$(BUILD_MODE))
 $(error Invalid BUILD_MODE '$(BUILD_MODE)'; must be one of: [$(VALID_BUILD_MODES)])
 endif
 
-BUILD_DIR       = build
+BIN             = bin
 CGO_ENABLED     = 0
 
 LDFLAGS_COMMON :=
@@ -24,8 +24,8 @@ GOFLAGS := $(GOFLAGS_COMMON)
 endif
 
 build:
-	mkdir -p $(BUILD_DIR)
-	CGO_ENABLED=$(CGO_ENABLED) go build $(GOFLAGS) -o "$(BUILD_DIR)" -ldflags "$(LDFLAGS)"
+	mkdir -p $(BIN)
+	CGO_ENABLED=$(CGO_ENABLED) go build $(GOFLAGS) -o "$(BIN)" -ldflags "$(LDFLAGS)"
 
 test:
 	go test -v ./...
@@ -35,14 +35,14 @@ cover:
 	
 clean:
 	go clean
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BIN)
 
 
 PREFIX ?= /usr/local
 
 install: build
 	install -d $(PREFIX)/bin
-	install $(BUILD_DIR)/gamon3 $(PREFIX)/bin
+	install $(BIN)/gamon3 $(PREFIX)/bin
 
 ################################################################################
 

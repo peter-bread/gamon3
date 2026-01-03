@@ -82,7 +82,7 @@ verify() {
   (
     export GOOS=$goos GOARCH=$goarch
     info "Building for $GOOS-$GOARCH"
-    make BUILD_DIR="$TMP"
+    make BIN="$TMP"
     info "Verifying release build checksums for $GOOS-$GOARCH"
     if ! check_files "$TMP"/gamon3 "$(goreleaser_path)"; then
       error "Release build checksums did not match for $GOOS-$GOARCH"
