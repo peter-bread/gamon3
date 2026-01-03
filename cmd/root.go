@@ -53,8 +53,8 @@ func Execute() {
 	}
 }
 
-func SetVersion(version, commit, date, os, arch string) {
-	rootCmd.Version = fmt.Sprintf("%s %s-%s\nCommit: %s (%s)", version, os, arch, commit, date)
+func SetVersion(version, os, arch string) {
+	rootCmd.Version = fmt.Sprintf("%s %s-%s", version, os, arch)
 }
 
 func init() {

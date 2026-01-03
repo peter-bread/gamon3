@@ -9,16 +9,22 @@ ifneq ($(filter $(BUILD_MODE),$(VALID_BUILD_MODES)),$(BUILD_MODE))
 $(error Invalid BUILD_MODE '$(BUILD_MODE)'; must be one of: [$(VALID_BUILD_MODES)])
 endif
 
-BIN             = bin
-CGO_ENABLED     = 0
+# This is the default value. In contexts where VCS information is unavaliable,
+# this needs to be set manually.
+#
+# For example, in a Homebrew formula, this set to 'version.to_s'.
+GAMON3_VERSION ?= $(shell git describe --tags --dirty --always)
 
-LDFLAGS_COMMON :=
-GOFLAGS_COMMON := -v -buildvcs=true
+BIN            := bin
+CGO_ENABLED    := 0
+
+LDFLAGS_COMMON := -X main.Version=$(GAMON3_VERSION)
+GOFLAGS_COMMON := -v -buildvcs=auto
 
 ifeq ($(BUILD_MODE), release)
 LDFLAGS := -s -w $(LDFLAGS_COMMON)
 GOFLAGS := -trimpath $(GOFLAGS_COMMON)
-else  ifeq ($(BUILD_MODE), debug)
+else ifeq ($(BUILD_MODE), debug)
 LDFLAGS := $(LDFLAGS_COMMON)
 GOFLAGS := $(GOFLAGS_COMMON)
 endif
@@ -47,5 +53,8 @@ install: build
 ################################################################################
 
 # This will use '.goreleaser.yaml' and build in 'dist/'.
+# GAMON3_VERSION is passed to ensure version output is the same as using 'make'.
+# This is just for checking that GoReleaser and Makefile builds are the same.
 goreleaser:
-	goreleaser release --snapshot --clean
+	GAMON3_VERSION=$(GAMON3_VERSION) goreleaser release --snapshot --clean
+	# goreleaser release --snapshot --clean
