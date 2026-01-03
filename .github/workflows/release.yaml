@@ -14,13 +14,15 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - uses: actions/setup-go@v6
         with:
-          go-version: '1.25'
+          go-version-file: 'go.mod'
+
+      - run: go version
 
       - name: Install GoReleaser
         uses: goreleaser/goreleaser-action@v6

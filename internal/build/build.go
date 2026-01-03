@@ -20,17 +20,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package main
+// Package build sets build information for the binary.
+package build
 
 import (
-	"github.com/peter-bread/gamon3/v2/cmd"
-	"github.com/peter-bread/gamon3/v2/internal/build"
+	"runtime"
+	"runtime/debug"
+)
+
+var (
+	Version = "dev"
+	Os      = "unknown"
+	Arch    = "unknown"
 )
 
 func init() {
-	cmd.SetVersion(build.Version, build.Os, build.Arch)
-}
+	if Version == "dev" {
+		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "(devel)" {
+			Version = info.Main.Version
+		}
+	}
 
-func main() {
-	cmd.Execute()
+	Os = runtime.GOOS
+	Arch = runtime.GOARCH
 }

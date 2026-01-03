@@ -1,6 +1,6 @@
 module github.com/peter-bread/gamon3/v2
 
-go 1.25.0
+go 1.25
 
 require (
 	github.com/goccy/go-yaml v1.18.0

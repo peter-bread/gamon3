@@ -9,12 +9,23 @@ before:
   hooks:
     - go mod tidy
 
+gomod:
+  proxy: true
+
 builds:
   - env:
       - CGO_ENABLED=0
+      - GAMON3_VERSION={{ if index .Env "GAMON3_VERSION" }}{{ .Env.GAMON3_VERSION }}{{ else }}{{ .Version }}{{ end }}
     goos:
       - darwin
       - linux
+    flags:
+      - -v
+      - -buildvcs=auto
+      - -trimpath
+    ldflags:
+      - -s -w
+      - -X github.com/peter-bread/gamon3/v2/internal/build.Version={{ .Env.GAMON3_VERSION }}
 
 archives:
   - formats: [tar.gz]
