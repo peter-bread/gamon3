@@ -38,7 +38,10 @@ func (m mockGhOS) LookupEnv(key string) (string, bool) {
 	val, ok := m.env[key]
 	return val, ok
 }
-func (m mockGhOS) UserConfigDir() (string, error) { return "/mock/home/.config", m.cfgDirErr }
+
+func (m mockGhOS) UserConfigDir() (string, error) {
+	return makeAbsPath("mock", "home", ".config"), m.cfgDirErr
+}
 
 func TestGhHostsPath(t *testing.T) {
 	tests := []struct {
@@ -51,9 +54,9 @@ func TestGhHostsPath(t *testing.T) {
 		{
 			name: "return path when GH_CONFIG_DIR is set",
 			os: mockGhOS{
-				env: map[string]string{"GH_CONFIG_DIR": "/mock/home/.config/gh"},
+				env: map[string]string{"GH_CONFIG_DIR": makeAbsPath("mock", "home", ".config", locator.GhFolderName)},
 			},
-			want: "/mock/home/.config/gh/hosts.yml",
+			want: makeAbsPath("mock", "home", ".config", locator.GhFolderName, "hosts.yml"),
 		},
 		{
 			name: "error if cannot find user config dir",
@@ -65,7 +68,7 @@ func TestGhHostsPath(t *testing.T) {
 		{
 			name: "return path when user config dir is found",
 			os:   mockGhOS{},
-			want: "/mock/home/.config/gh/hosts.yml",
+			want: makeAbsPath("mock", "home", ".config", locator.GhFolderName, "hosts.yml"),
 		},
 	}
 	for _, tt := range tests {

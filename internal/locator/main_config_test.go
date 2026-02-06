@@ -43,7 +43,9 @@ func (m mockMainOS) Stat(name string) (os.FileInfo, error) {
 	return nil, os.ErrNotExist
 }
 
-func (m mockMainOS) UserConfigDir() (string, error) { return "/mock/home/.config", m.cfgDirErr }
+func (m mockMainOS) UserConfigDir() (string, error) {
+	return makeAbsPath("mock", "home", ".config"), m.cfgDirErr
+}
 
 func (m mockMainOS) LookupEnv(key string) (string, bool) {
 	val, ok := m.env[key]
@@ -78,18 +80,18 @@ func TestMainConfigPath(t *testing.T) {
 		{
 			name: "config file exists in user config dir",
 			os: mockMainOS{
-				files: map[string]bool{"/mock/home/.config/gamon3/config.yaml": true},
+				files: map[string]bool{makeAbsPath("mock", "home", ".config", "gamon3", "config.yaml"): true},
 				env:   map[string]string{},
 			},
-			want: "/mock/home/.config/gamon3/config.yaml",
+			want: makeAbsPath("mock", "home", ".config", "gamon3", "config.yaml"),
 		},
 		{
 			name: "find config file in GAMON3_CONFIG_DIR if it is set",
 			os: mockMainOS{
-				files: map[string]bool{"/mock/home/.config/gamon3/config.yml": true},
-				env:   map[string]string{"GAMON3_CONFIG_DIR": "/mock/home/.config/gamon3"},
+				files: map[string]bool{makeAbsPath("mock", "home", ".config", "gamon3", "config.yml"): true},
+				env:   map[string]string{"GAMON3_CONFIG_DIR": makeAbsPath("mock", "home", ".config", "gamon3")},
 			},
-			want: "/mock/home/.config/gamon3/config.yml",
+			want: makeAbsPath("mock", "home", ".config", "gamon3", "config.yml"),
 		},
 	}
 	for _, tt := range tests {

@@ -83,7 +83,7 @@ func TestLocalConfigPath(t *testing.T) {
 		{
 			name: "error if cannot get user home directory",
 			os: mockLocalOS{
-				wd:      "/home/user/project",
+				wd:      makeAbsPath("home", "user", "project"),
 				homeErr: fmt.Errorf("could not get user home directory"),
 			},
 			wantErr: true,
@@ -91,26 +91,26 @@ func TestLocalConfigPath(t *testing.T) {
 		{
 			name: "local config file exists in current directory",
 			os: mockLocalOS{
-				wd:    "/home/user/project",
-				home:  "/home/user",
-				files: map[string]bool{"/home/user/project/.gamon3.yaml": true},
+				wd:    makeAbsPath("home", "user", "project"),
+				home:  makeAbsPath("home", "user"),
+				files: map[string]bool{makeAbsPath("home", "user", "project", ".gamon3.yaml"): true},
 			},
-			want: "/home/user/project/.gamon3.yaml",
+			want: makeAbsPath("home", "user", "project", ".gamon3.yaml"),
 		},
 		{
 			name: "local config file exists in parent directory",
 			os: mockLocalOS{
-				wd:    "/home/user/project/subdir",
-				home:  "/home/user",
-				files: map[string]bool{"/home/user/project/.gamon3.yml": true},
+				wd:    makeAbsPath("home", "user", "project", "subdir"),
+				home:  makeAbsPath("home", "user"),
+				files: map[string]bool{makeAbsPath("home", "user", "project", ".gamon3.yml"): true},
 			},
-			want: "/home/user/project/.gamon3.yml",
+			want: makeAbsPath("home", "user", "project", ".gamon3.yml"),
 		},
 		{
 			name: "local config file not found",
 			os: mockLocalOS{
-				wd:    "/home/user/project",
-				home:  "/home/user",
+				wd:    makeAbsPath("home", "user", "project"),
+				home:  makeAbsPath("home", "user"),
 				files: map[string]bool{},
 			},
 			wantErr: true,
