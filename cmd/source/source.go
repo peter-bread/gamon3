@@ -26,7 +26,7 @@ package source
 import (
 	"fmt"
 
-	"github.com/peter-bread/gamon3/v2/internal/resolve/runtime"
+	"github.com/peter-bread/gamon3/v2/internal/resolve/resolveruntime"
 
 	"github.com/spf13/cobra"
 )
@@ -52,7 +52,7 @@ There are three methods used to determine which account should be used:
 3. Main user config file 'config.yaml'
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		resolver := runtime.NewResolver()
+		resolver := resolveruntime.NewResolver()
 
 		result, err := resolver.Resolve()
 		if err != nil {

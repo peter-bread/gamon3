@@ -20,9 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-// Package runtime provides concrete implementations of the interfaces defined
+// Package resolveruntime provides concrete implementations of the interfaces defined
 // in the parent package.
-package runtime
+package resolveruntime
 
 import (
 	"github.com/peter-bread/gamon3/v2/internal/config"

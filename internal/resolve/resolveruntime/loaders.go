@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package runtime
+package resolveruntime
 
 import (
 	"github.com/peter-bread/gamon3/v2/internal/config"
