@@ -22,7 +22,7 @@ THE SOFTWARE.
 
 // Package runtime provides concrete implementations of the interfaces defined
 // in the parent package.
-package runtime
+package authswitchruntime
 
 import "github.com/peter-bread/gamon3/v2/internal/authswitch"
 

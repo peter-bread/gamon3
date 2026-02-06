@@ -26,7 +26,7 @@ THE SOFTWARE.
 package run
 
 import (
-	authswitch "github.com/peter-bread/gamon3/v2/internal/authswitch/runtime"
+	"github.com/peter-bread/gamon3/v2/internal/authswitch/authswitchruntime"
 	"github.com/peter-bread/gamon3/v2/internal/resolve/resolveruntime"
 	"github.com/spf13/cobra"
 )
@@ -54,7 +54,7 @@ There are three methods used to determine which account should be used:
 			return err
 		}
 
-		switcher := authswitch.NewSwitcher()
+		switcher := authswitchruntime.NewSwitcher()
 		err = switcher.SwitchIfNeeded(result.Account, result.Current)
 
 		return err
