@@ -1,0 +1,5 @@
+---
+default: john
+accounts:
+  jane:
+    - foo

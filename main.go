@@ -23,14 +23,28 @@ THE SOFTWARE.
 package main
 
 import (
-	"github.com/peter-bread/gamon3/v2/cmd"
-	"github.com/peter-bread/gamon3/v2/internal/build"
+	"fmt"
+	"io/fs"
+	"path/filepath"
+
+	"github.com/peter-bread/gamon3/v2/internal/config"
 )
 
-func init() {
-	cmd.SetVersion(build.Version, build.Os, build.Arch)
-}
-
 func main() {
-	cmd.Execute()
+	// cfg, err := config.LoadGhHosts("./hosts.yml")
+	// fmt.Println(cfg, err)
+	filepath.WalkDir("./internal/config/testdata/gh_hosts/", func(path string, d fs.DirEntry, err error) error {
+		if d.IsDir() {
+			return nil
+		}
+
+		cfg, err := config.LoadGhHosts(path)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println(cfg)
+		}
+
+		return nil
+	})
 }
