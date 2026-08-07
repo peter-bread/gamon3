@@ -33,7 +33,7 @@ jobs:
       - name: Show GoReleaser version
         run: goreleaser -v
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v7
         with:
           node-version: 20
 
